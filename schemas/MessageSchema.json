@@ -1,0 +1,814 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MutualAidMessage",
+  "description": "Root schema for all mutual aid messages broadcast over BLE/mesh network",
+  "type": "object",
+  "required": ["message_id", "version", "type", "timestamp", "public"],
+  "properties": {
+    "message_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for this message, randomly generated"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Schema version for forward compatibility"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["NEED", "OFFER", "COORDINATION", "BROKER_ACCESS", "COMPLETION", "REVOCATION"],
+      "description": "Message type"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp (may be backdated for privacy)"
+    },
+    "in_response_to": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Message ID this is responding to (null for original messages)"
+    },
+    "hop_count": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 10,
+      "description": "Number of hops for relay purposes (not preserved in rebroadcast for privacy)"
+    },
+    "public": {
+      "type": "object",
+      "description": "Publicly visible information (unencrypted)",
+      "properties": {
+        "category": {
+          "type": "object",
+          "required": ["primary"],
+          "properties": {
+            "primary": {
+              "type": "string",
+              "enum": [
+                "FOOD",
+                "WATER",
+                "SHELTER",
+                "CLOTHING",
+                "HYGIENE",
+                "MEDICAL",
+                "TRANSPORTATION",
+                "CHILDCARE",
+                "ELDERCARE",
+                "SAFETY",
+                "EMPLOYMENT",
+                "EDUCATION",
+                "FINANCIAL",
+                "HOUSEHOLD",
+                "COMMUNICATION",
+                "SKILLS",
+                "SOCIAL",
+                "COORDINATION",
+                "INFORMATION",
+                "LEGAL_HELP",
+                "DOCUMENTATION",
+                "MENTAL_HEALTH",
+                "PET_CARE",
+                "OTHER"
+              ]
+            },
+            "secondary": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Subcategories specific to primary category"
+            },
+            "attributes": {
+              "type": "object",
+              "description": "Category-specific attributes (structured enums)",
+              "additionalProperties": true
+            }
+          }
+        },
+        "location": {
+          "type": "object",
+          "required": ["coords"],
+          "properties": {
+            "coords": {
+              "type": "string",
+              "pattern": "^-?\\d+\\.\\d+±\\d+\\.\\d+,-?\\d+\\.\\d+±\\d+\\.\\d+$",
+              "description": "Lat,long with precision: '37.423±0.001,-122.084±0.001'"
+            },
+            "precision_level": {
+              "type": "string",
+              "enum": ["very_low", "low", "medium", "high"],
+              "description": "Human-readable precision indicator"
+            }
+          }
+        },
+        "time": {
+          "type": "object",
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "enum": [
+                "Immediate",
+                "Today",
+                "Tomorrow",
+                "This_week",
+                "Next_week",
+                "Specific_days",
+                "Recurring",
+                "Flexible"
+              ]
+            },
+            "windows": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "days": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+                    }
+                  },
+                  "time_blocks": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "Early_morning_6-9",
+                        "Morning_9-12",
+                        "Midday_12-15",
+                        "Afternoon_15-18",
+                        "Evening_18-21",
+                        "Night_21-24"
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "recurrence": {
+              "type": "object",
+              "properties": {
+                "frequency": {
+                  "type": "string",
+                  "enum": ["Daily", "Weekly", "Biweekly", "Monthly"]
+                },
+                "duration": {
+                  "type": "string",
+                  "enum": ["Ongoing", "Limited_time"]
+                },
+                "expires": {
+                  "type": ["string", "null"],
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        },
+        "quantity": {
+          "type": "string",
+          "enum": [
+            "Single_instance",
+            "Small_amount",
+            "Medium_amount",
+            "Large_amount",
+            "Bulk",
+            "Ongoing_supply"
+          ]
+        },
+        "recurrence_pattern": {
+          "type": "string",
+          "enum": ["One_time", "Weekly", "Biweekly", "Monthly", "Ongoing"]
+        },
+        "note": {
+          "type": ["string", "null"],
+          "maxLength": 100,
+          "description": "Optional brief public note (rare, should be avoided)"
+        }
+      }
+    },
+    "coordination_key": {
+      "type": ["string", "null"],
+      "description": "Base64-encoded public key for encrypted responses (ephemeral, per-message)"
+    },
+    "encrypted_payloads": {
+      "type": "array",
+      "description": "Array of encrypted payloads, each for a specific recipient",
+      "items": {
+        "type": "object",
+        "required": ["recipient_key", "nonce", "payload", "payload_size"],
+        "properties": {
+          "recipient_key": {
+            "type": "string",
+            "description": "Base64-encoded public key of intended recipient"
+          },
+          "nonce": {
+            "type": "string",
+            "description": "Base64-encoded nonce for encryption"
+          },
+          "payload": {
+            "type": "string",
+            "description": "Base64-encoded encrypted data"
+          },
+          "payload_size": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Size of padded payload (standardized for privacy)"
+          },
+          "hint": {
+            "type": ["string", "null"],
+            "enum": [
+              "for_coordination",
+              "for_broker",
+              "for_helper",
+              "for_requester",
+              "for_offerer",
+              null
+            ],
+            "description": "Optional hint about payload role (doesn't reveal content)"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Optional metadata for system operation",
+      "properties": {
+        "relay_eligible": {
+          "type": "boolean",
+          "description": "Whether this message should be relayed by other nodes"
+        },
+        "expires_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "When this message should be dropped from relay"
+        },
+        "priority": {
+          "type": "string",
+          "enum": ["low", "normal", "high"],
+          "description": "Relay priority"
+        }
+      }
+    }
+  },
+  "definitions": {
+    "encrypted_payload_content": {
+      "description": "Schema for decrypted payload content (not transmitted, for documentation)",
+      "type": "object",
+      "properties": {
+        "location_details": {
+          "type": "object",
+          "properties": {
+            "precision": {
+              "type": "string",
+              "enum": ["high", "very_high"]
+            },
+            "coords": {
+              "type": "string",
+              "pattern": "^-?\\d+\\.\\d+,-?\\d+\\.\\d+$",
+              "description": "Precise coordinates without rounding"
+            },
+            "identifiers": {
+              "type": ["object", "null"],
+              "properties": {
+                "building": {
+                  "type": ["string", "null"],
+                  "pattern": "^[0-9A-Za-z]{1,2}$",
+                  "description": "Building identifier, 1-2 alphanumeric characters"
+                },
+                "floor": {
+                  "type": ["string", "null"],
+                  "pattern": "^[0-9A-Za-z]{1,2}$",
+                  "description": "Floor identifier, 1-2 alphanumeric characters"
+                },
+                "unit": {
+                  "type": ["string", "null"],
+                  "pattern": "^[0-9A-Za-z]{1,2}$",
+                  "description": "Unit identifier, 1-2 alphanumeric characters"
+                }
+              }
+            },
+            "map_pin": {
+              "type": ["object", "null"],
+              "properties": {
+                "coords": {
+                  "type": "string",
+                  "pattern": "^-?\\d+\\.\\d+,-?\\d+\\.\\d+$"
+                },
+                "description": {
+                  "type": "string",
+                  "enum": [
+                    "Park_bench",
+                    "Playground_entrance",
+                    "Parking_lot",
+                    "Bus_stop",
+                    "Street_corner",
+                    "Building_entrance",
+                    "Garden_gate",
+                    "Market_stall",
+                    "Picnic_area",
+                    "Trail_head",
+                    "Monument",
+                    "Fountain",
+                    "Community_board",
+                    "Other_landmark"
+                  ]
+                }
+              },
+              "required": ["coords", "description"]
+            },
+            "access_notes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Side_entrance",
+                  "Front_entrance",
+                  "Buzzer_broken_knock",
+                  "Buzzer_number",
+                  "Parking_available",
+                  "No_parking",
+                  "Stairs_required",
+                  "Elevator_available",
+                  "Call_on_arrival",
+                  "Text_on_arrival"
+                ]
+              }
+            }
+          }
+        },
+        "time_details": {
+          "type": "object",
+          "properties": {
+            "specific_date": {
+              "type": "string",
+              "format": "date"
+            },
+            "specific_windows": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "string",
+                    "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+                  },
+                  "end": {
+                    "type": "string",
+                    "pattern": "^([0-1][0-9]|2[0-3]):[0-5][0-9]$"
+                  },
+                  "timezone": {
+                    "type": "string"
+                  }
+                },
+                "required": ["start", "end"]
+              }
+            },
+            "flexibility": {
+              "type": "string",
+              "enum": ["Exact_time", "Prefer_first_window", "Any_window_ok", "Flexible"]
+            },
+            "last_minute_changes": {
+              "type": "string",
+              "enum": ["Call_if_late", "Text_if_late", "Strict_time", "Very_flexible"]
+            }
+          }
+        },
+        "contact_name": {
+          "type": ["string", "null"],
+          "pattern": "^[A-Za-z0-9_\\s]{1,20}$",
+          "description": "Name or pseudonym, 1-20 alphanumeric characters"
+        },
+        "name_type": {
+          "type": "string",
+          "enum": ["Pseudonym", "First_name", "Nickname", "Initials", "Anonymous"]
+        },
+        "how_to_address": {
+          "type": "string",
+          "enum": ["Just_knock", "Call_first", "Text_first", "Ask_for_name", "Buzzer"]
+        },
+        "coordination_notes": {
+          "type": "object",
+          "properties": {
+            "meeting_type": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Drop_and_go",
+                  "Brief_exchange",
+                  "Time_to_chat",
+                  "Broker_facilitated",
+                  "Public_place_only"
+                ]
+              }
+            },
+            "access_requirements": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Wheelchair_accessible",
+                  "Stairs_required",
+                  "Heavy_items",
+                  "No_parking",
+                  "Parking_available",
+                  "Elevator_needed",
+                  "Ground_floor"
+                ]
+              }
+            },
+            "identification": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Blue_jacket",
+                  "Red_jacket",
+                  "Green_jacket",
+                  "Black_jacket",
+                  "Red_car",
+                  "Blue_car",
+                  "White_car",
+                  "With_dog",
+                  "With_cat",
+                  "With_child",
+                  "Carrying_bag",
+                  "At_front_door",
+                  "At_side_door"
+                ]
+              }
+            },
+            "language": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "ISO 639-1 language codes"
+            },
+            "bring_helper": {
+              "type": "string",
+              "enum": ["Welcome", "Prefer_solo", "Required", "No_preference"]
+            }
+          }
+        },
+        "responder_type": {
+          "type": "string",
+          "enum": ["OFFER", "BROKER", "ALTERNATIVE"],
+          "description": "What kind of response this is"
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Brief message within coordination"
+        },
+        "my_coordination_key": {
+          "type": "string",
+          "description": "Responder's public key for bidirectional communication"
+        },
+        "grant_access": {
+          "type": ["boolean", "string"],
+          "enum": [true, false, "observe_only", "full_mediation"],
+          "description": "For broker access messages"
+        },
+        "conversation_keys": {
+          "type": "object",
+          "properties": {
+            "my_private_key": {
+              "type": "string",
+              "description": "Shared with broker for transparent mode"
+            },
+            "their_public_key": {
+              "type": "string",
+              "description": "Other party's key (for broker context)"
+            }
+          }
+        },
+        "context": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Brief context for broker about this coordination"
+        },
+        "role": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "What role broker should play"
+        },
+        "confirmation": {
+          "type": "boolean",
+          "description": "Confirmation of coordination details"
+        },
+        "acceptance": {
+          "type": "boolean",
+          "description": "Acceptance of an offer"
+        },
+        "chosen_time": {
+          "type": "string",
+          "description": "Specific chosen time from options"
+        }
+      }
+    },
+    "category_attributes": {
+      "description": "Specific attribute schemas for each category",
+      "type": "object",
+      "oneOf": [
+        {
+          "title": "FoodAttributes",
+          "properties": {
+            "dietary": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "No_restriction",
+                  "Vegetarian",
+                  "Vegan",
+                  "Halal",
+                  "Kosher",
+                  "Gluten_free",
+                  "Dairy_free",
+                  "Nut_free",
+                  "Allergy_specific",
+                  "Diabetic_friendly",
+                  "Low_sodium"
+                ]
+              }
+            },
+            "preparation": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Ready_to_eat",
+                  "Needs_heating",
+                  "Raw_ingredients",
+                  "Shelf_stable",
+                  "Refrigeration_needed",
+                  "Frozen"
+                ]
+              }
+            },
+            "portion": {
+              "type": "string",
+              "enum": [
+                "Individual",
+                "Family_small_2-4",
+                "Family_large_5plus",
+                "Bulk"
+              ]
+            }
+          }
+        },
+        {
+          "title": "TransportationAttributes",
+          "properties": {
+            "distance": {
+              "type": "string",
+              "enum": [
+                "Within_neighborhood",
+                "Cross_town",
+                "To_nearby_city",
+                "Long_distance"
+              ]
+            },
+            "accessibility": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Wheelchair_accessible",
+                  "Car_seat_needed",
+                  "Bike_trailer",
+                  "Walking_only",
+                  "Pet_friendly"
+                ]
+              }
+            },
+            "purpose": {
+              "type": "string",
+              "enum": [
+                "Medical_appointment",
+                "Work_commute",
+                "Grocery_shopping",
+                "School_transport",
+                "General_errand",
+                "Airport",
+                "Emergency"
+              ]
+            }
+          }
+        },
+        {
+          "title": "ShelterAttributes",
+          "properties": {
+            "duration": {
+              "type": "string",
+              "enum": [
+                "Tonight_only",
+                "Few_days",
+                "Week_or_two",
+                "Month_plus",
+                "Long_term"
+              ]
+            },
+            "occupants": {
+              "type": "string",
+              "enum": [
+                "Single_person",
+                "Couple",
+                "Family_with_kids",
+                "With_pets"
+              ]
+            },
+            "accessibility": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Ground_floor",
+                  "Elevator_access",
+                  "Stairs_only",
+                  "Wheelchair_accessible"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "title": "ClothingAttributes",
+          "properties": {
+            "size": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Baby_0-12mo",
+                  "Toddler_1-4yr",
+                  "Child_5-12yr",
+                  "Teen",
+                  "Adult_XS",
+                  "Adult_S",
+                  "Adult_M",
+                  "Adult_L",
+                  "Adult_XL",
+                  "Adult_XXL",
+                  "Adult_XXXL",
+                  "Shoes_child",
+                  "Shoes_adult"
+                ]
+              }
+            },
+            "gender": {
+              "type": "string",
+              "enum": ["Any", "Masculine_cut", "Feminine_cut"]
+            },
+            "season": {
+              "type": "string",
+              "enum": ["Summer", "Winter", "All_season"]
+            },
+            "condition": {
+              "type": "string",
+              "enum": [
+                "New_with_tags",
+                "Like_new",
+                "Gently_used",
+                "Well_worn_functional"
+              ]
+            }
+          }
+        },
+        {
+          "title": "CoordinationAttributes",
+          "properties": {
+            "space_type": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Indoor_private",
+                  "Indoor_public",
+                  "Outdoor_covered",
+                  "Outdoor_open",
+                  "Vehicle"
+                ]
+              }
+            },
+            "capacity": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Small_items",
+                  "Medium_boxes",
+                  "Large_furniture",
+                  "Refrigeration",
+                  "Overnight_storage",
+                  "Secure_storage"
+                ]
+              }
+            },
+            "facilitator_role": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Passive_space",
+                  "Active_presence",
+                  "Introduction_maker",
+                  "Translator",
+                  "Witness_only",
+                  "Can_transport"
+                ]
+              }
+            },
+            "languages": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "ISO 639-1 language codes"
+            },
+            "hours": {
+              "type": "string",
+              "enum": [
+                "Business_hours",
+                "Evenings",
+                "Weekends",
+                "By_appointment",
+                "Flexible"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "completion_summary": {
+      "description": "Anonymous summary for good news broadcasts",
+      "type": "object",
+      "required": ["category", "area", "time"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Category that was fulfilled"
+        },
+        "area": {
+          "type": "string",
+          "pattern": "^-?\\d+\\.\\d+±\\d+,-?\\d+\\.\\d+±\\d+$",
+          "description": "Very broad area (multiple km radius)"
+        },
+        "time": {
+          "type": "string",
+          "enum": ["Today", "Yesterday", "This_week", "Recently"]
+        },
+        "multiple_helpers": {
+          "type": "boolean",
+          "description": "Whether multiple people helped"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {"type": {"const": "COMPLETION"}}
+      },
+      "then": {
+        "required": ["related_to", "anonymous_summary"],
+        "properties": {
+          "related_to": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Original request/offer message ID"
+          },
+          "anonymous_summary": {
+            "$ref": "#/definitions/completion_summary"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {"type": {"const": "REVOCATION"}}
+      },
+      "then": {
+        "required": ["conversation", "revoke_from"],
+        "properties": {
+          "conversation": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revoke_from": {
+            "type": "string",
+            "description": "Public key or identifier of broker to revoke"
+          },
+          "effective": {
+            "type": "string",
+            "enum": ["immediately", "after_current_exchange"]
+          }
+        }
+      }
+    }
+  ]
+}

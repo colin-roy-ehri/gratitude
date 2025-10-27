@@ -1,0 +1,228 @@
+# .claude file for Mutual Aid Community App
+# This file provides context and guidance for Claude Code when working on this project
+
+project_name: "Mutual Aid Community App"
+description: |
+  A privacy-first, offline-capable mutual aid network application that enables 
+  community members to request and offer help through Bluetooth Low Energy mesh networking.
+  
+  Core principles:
+  - Privacy by design (no central server, encrypted coordination)
+  - Dignity-preserving (no charity dynamics, mutual exchange)
+  - Accessible (works for all literacy levels, ages, abilities)
+  - Offline-first (BLE mesh, works without internet)
+  - No free-text (categorical system prevents abuse)
+  - Community-driven (patterns emerge organically, not algorithmically)
+
+technology_stack:
+  mobile:
+    - React Native (cross-platform iOS/Android)
+    - TypeScript (type safety)
+    - libsodium (encryption via react-native-sodium)
+    - react-native-ble-manager (Bluetooth LE)
+    - AsyncStorage (local data persistence)
+    - react-native-maps (OpenStreetMap via Mapbox)
+  
+  desktop:
+    - Electron (optional, for broader access)
+  
+  data:
+    - No backend/server
+    - All data stored locally
+    - Messages broadcast via BLE mesh
+    - JSON schema for message format
+
+key_features:
+  - Create requests (NEED messages)
+  - Create offers (OFFER messages)
+  - Browse nearby requests/offers
+  - Encrypted coordination between parties
+  - Optional broker/intermediary system
+  - Multi-payload encryption (share with multiple recipients)
+  - Adaptive privacy (location precision based on network density)
+  - Good news broadcasts (anonymous completion announcements)
+  - QR code sharing for network growth
+  - Wizard-based UI for ease of use
+
+architecture:
+  message_types:
+    - NEED: Request for help
+    - OFFER: Offer to help
+    - COORDINATION: Private coordination between matched parties
+    - BROKER_ACCESS: Grant broker access to coordination
+    - COMPLETION: Anonymous "good news" broadcast
+    - REVOCATION: Revoke broker access
+  
+  privacy_model:
+    - Public broadcast: Category, approximate location/time, quantity
+    - Private coordination: Exact location, contact name, specific times
+    - Multi-recipient encryption: Different details to different parties
+    - No persistent identity: New keys per message
+    - Message flooding: Relay messages for plausible deniability
+  
+  network:
+    - BLE mesh (100m range per hop)
+    - Store-and-forward relay
+    - No hop count preserved (privacy)
+    - Message expiration (24-48 hours)
+    - Offline queue with sync
+
+directory_structure: |
+  mutual-aid-app/
+  ├── src/
+  │   ├── components/        # Reusable UI components
+  │   │   ├── CategoryIcon.tsx
+  │   │   ├── MessageCard.tsx
+  │   │   ├── WizardStep.tsx
+  │   │   └── QRCodeDisplay.tsx
+  │   ├── screens/           # Main app screens
+  │   │   ├── HomeScreen.tsx
+  │   │   ├── RequestWizard/
+  │   │   ├── OfferWizard/
+  │   │   ├── CoordinationScreen.tsx
+  │   │   └── ActivityScreen.tsx
+  │   ├── services/          # Core logic
+  │   │   ├── crypto/
+  │   │   │   ├── keyManagement.ts
+  │   │   │   ├── encryption.ts
+  │   │   │   └── messageEncryption.ts
+  │   │   ├── ble/
+  │   │   │   ├── bleManager.ts
+  │   │   │   ├── messageRelay.ts
+  │   │   │   └── deviceDiscovery.ts
+  │   │   ├── storage/
+  │   │   │   ├── messageStore.ts
+  │   │   │   └── keyStore.ts
+  │   │   └── matching/
+  │   │       ├── matcher.ts
+  │   │       └── densityCalculator.ts
+  │   ├── types/             # TypeScript definitions
+  │   │   ├── message.ts
+  │   │   ├── category.ts
+  │   │   └── encryption.ts
+  │   ├── schemas/           # JSON schemas
+  │   │   └── message-schema.json
+  │   ├── utils/             # Utility functions
+  │   │   ├── validation.ts
+  │   │   ├── formatting.ts
+  │   │   └── privacy.ts
+  │   └── constants/         # App constants
+  │       ├── categories.ts
+  │       └── config.ts
+  ├── assets/                # Icons, fonts, images
+  ├── docs/                  # Documentation
+  │   ├── architecture.md
+  │   ├── message-format.md
+  │   ├── privacy-model.md
+  │   └── ui-flows.md
+  ├── package.json
+  ├── tsconfig.json
+  └── README.md
+
+important_files:
+  - "schemas/message-schema.json": Complete JSON schema for all message types
+  - "types/message.ts": TypeScript definitions matching schema
+  - "services/crypto/messageEncryption.ts": Multi-payload encryption logic
+  - "services/matching/densityCalculator.ts": Network density for adaptive privacy
+  - "constants/categories.ts": All category enums and attributes
+
+development_priorities:
+  phase_1_mvp:
+    - Message schema validation
+    - Local storage of messages
+    - Basic BLE broadcast/receive
+    - Simple request/offer creation
+    - Message list display
+    - Direct coordination (no encryption yet)
+  
+  phase_2_core:
+    - Encryption (single recipient)
+    - Key management
+    - Multi-payload encryption
+    - Message relay/flooding
+    - Network density calculation
+    - Adaptive location precision
+  
+  phase_3_enhanced:
+    - Broker system
+    - Good news broadcasts
+    - QR code generation
+    - Map integration
+    - Wizard UI refinement
+  
+  phase_4_polish:
+    - Accessibility features
+    - Offline queue optimization
+    - UI animations
+    - Onboarding flow
+    - Testing & bug fixes
+
+coding_guidelines:
+  - Use TypeScript strict mode
+  - Follow functional programming patterns where possible
+  - Encrypt all sensitive data at rest
+  - Never log decrypted payloads
+  - Validate all incoming messages against schema
+  - Use enums from constants, never hard-code strings
+  - Keep components small and focused
+  - Write tests for crypto and matching logic
+  - Comment complex privacy/security logic
+  - Graceful degradation for missing features
+
+security_requirements:
+  - Never store private keys unencrypted
+  - Use libsodium for all crypto (X25519, XSalsa20-Poly1305)
+  - Generate new keypair per message (ephemeral)
+  - Pad all encrypted payloads to standard sizes
+  - Clear sensitive data from memory after use
+  - No analytics or tracking
+  - No network requests except BLE
+  - Validate all message fields
+  - Rate-limit message creation
+
+accessibility_requirements:
+  - Minimum 44x44pt tap targets
+  - High contrast mode support
+  - Screen reader compatibility
+  - Large text support
+  - Voice input for limited typing
+  - Icon + text for all actions
+  - Simple language throughout
+  - Error messages that help
+
+testing_strategy:
+  unit_tests:
+    - Message validation
+    - Encryption/decryption
+    - Key generation
+    - Category attribute validation
+    - Location precision calculation
+  
+  integration_tests:
+    - Message creation → storage → retrieval
+    - Encryption → BLE send → receive → decryption
+    - Matching logic
+    - Relay functionality
+  
+  manual_testing:
+    - UI flows (wizard, coordination)
+    - BLE range and reliability
+    - Multi-device message propagation
+    - Battery usage
+    - Offline functionality
+
+reference_documents:
+  - "This conversation document": Complete design discussion and requirements
+  - "JSON Schema": schemas/message-schema.json
+  - "UI Flow sketches": In conversation, screens section
+  - "User requirements": In conversation, UX requirements section
+
+notes_for_claude:
+  - Prioritize privacy and security in all decisions
+  - When in doubt about UX, favor simplicity and dignity
+  - Remember: no free-text fields (except building/unit identifiers)
+  - Categories and attributes must use enums only
+  - Location precision must adapt to network density
+  - Messages must be relayed for privacy (flooding)
+  - Encryption is multi-recipient (array of payloads)
+  - No server/backend - everything local and P2P

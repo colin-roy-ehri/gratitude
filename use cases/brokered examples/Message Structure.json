@@ -1,0 +1,32 @@
+{
+  "message_id": "uuid",
+  "type": "NEED" | "OFFER" | "COORDINATION",
+  
+  // Public information (everyone sees)
+  "public": {
+    "category": {...},
+    "location": {"coords": "37.423±0.001"},
+    "time": {...},
+    "quantity": "...",
+    "recurrence": "..."
+  },
+  
+  // Multiple encrypted payloads (each for specific recipient)
+  "encrypted_payloads": [
+    {
+      "recipient_key": "public_key_A",  // Who can decrypt this
+      "payload": "encrypted_blob_1"
+    },
+    {
+      "recipient_key": "public_key_B",
+      "payload": "encrypted_blob_2"
+    },
+    {
+      "recipient_key": "public_key_C",
+      "payload": "encrypted_blob_3"
+    }
+  ],
+  
+  // My public key for responses
+  "coordination_key": "my_public_key"
+}

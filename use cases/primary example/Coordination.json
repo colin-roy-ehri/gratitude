@@ -1,0 +1,43 @@
+{
+  "message_id": "750e8400-e29b-41d4-a716-446655440002",
+  "version": 1,
+  "type": "COORDINATION",
+  "timestamp": "2025-10-26T15:30:00Z",
+  "in_response_to": "550e8400-e29b-41d4-a716-446655440000",
+  "hop_count": 0,
+  "public": {
+    "category": {
+      "primary": "FOOD",
+      "secondary": [],
+      "attributes": {}
+    },
+    "location": {
+      "coords": "37.424±0.001,-122.083±0.001",
+      "precision_level": "low"
+    },
+    "time": {},
+    "note": null
+  },
+  "coordination_key": "OCowBQYDK2VuAyEC...",
+  "encrypted_payloads": [
+    {
+      "recipient_key": "MCowBQYDK2VuAyEA...",
+      "nonce": "AAAAAAAAAAAAAAAAAAAAAA==",
+      "payload": "U2FsdGVkX1+vupppZksvRf5pq5g5XjFRIipRkwB0K1Y=...",
+      "payload_size": 1024,
+      "hint": "for_requester"
+    },
+    {
+      "recipient_key": "NCowBQYDK2VuAyEB...",
+      "nonce": "BBBBBBBBBBBBBBBBBBBBBB==",
+      "payload": "V3FsdGVkX1+wvqqqZlsxSg6qr6h6YkGSJjqSlxC1L2Z=...",
+      "payload_size": 1024,
+      "hint": "for_broker"
+    }
+  ],
+  "metadata": {
+    "relay_eligible": true,
+    "expires_at": "2025-11-02T15:30:00Z",
+    "priority": "normal"
+  }
+}

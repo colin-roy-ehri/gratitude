@@ -1,0 +1,41 @@
+// Requester adding broker to existing coordination
+{
+  "message_id": "update-789",
+  "type": "COORDINATION",
+  "in_response_to": "offer-123",
+  
+  "public": {},  // No new public info
+  
+  "encrypted_payloads": [
+    {
+      "recipient_key": "offerer_public_key",
+      "payload": "encrypted{
+        message: 'Tuesday 6 PM confirmed',
+        location_details: {
+          building: '12',
+          unit: '5A'
+        },
+        note: 'I added Elder_at_library as safety backup'
+      }"
+    },
+    {
+      "recipient_key": "broker_public_key",
+      "payload": "encrypted{
+        context: 'Food delivery coordination',
+        grant_access: 'observe_only',
+        summary: 'Meeting Tuesday 6 PM, Bldg 12 Unit 5A',
+        other_party_key: 'offerer_public_key',
+        conversation_history: [...],  // Optional
+        role: 'Please be aware in case issues'
+      }"
+    },
+    {
+      "recipient_key": "my_own_backup_key",
+      "payload": "encrypted{
+        // Keep my own record
+        full_details: {...},
+        notes: 'Feeling good about this exchange'
+      }"
+    }
+  ]
+}

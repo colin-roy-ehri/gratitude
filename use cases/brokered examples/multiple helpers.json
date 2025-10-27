@@ -1,0 +1,49 @@
+// Requester coordinating with 3 offerers + 1 broker
+{
+  "message_id": "multi-coord-555",
+  "type": "COORDINATION",
+  
+  "public": {
+    "category": {"primary": "FOOD"},
+    "note": "Coordinating with multiple helpers"
+  },
+  
+  "encrypted_payloads": [
+    {
+      "recipient_key": "offerer_A_key",
+      "payload": "encrypted{
+        message: 'Can you bring vegetables Tuesday?',
+        my_location: {...},
+        your_role: 'vegetables'
+      }"
+    },
+    {
+      "recipient_key": "offerer_B_key",
+      "payload": "encrypted{
+        message: 'Can you bring bread Wednesday?',
+        my_location: {...},
+        your_role: 'bread'
+      }"
+    },
+    {
+      "recipient_key": "offerer_C_key",
+      "payload": "encrypted{
+        message: 'Can you bring dairy Thursday?',
+        my_location: {...},
+        your_role: 'dairy'
+      }"
+    },
+    {
+      "recipient_key": "broker_key",
+      "payload": "encrypted{
+        context: 'Three deliveries this week',
+        full_plan: {
+          tuesday: 'Offerer A - vegetables',
+          wednesday: 'Offerer B - bread',
+          thursday: 'Offerer C - dairy'
+        },
+        request: 'Can you receive and store at library?'
+      }"
+    }
+  ]
+}

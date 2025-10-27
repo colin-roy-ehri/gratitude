@@ -1,0 +1,48 @@
+{
+  "message_id": "650e8400-e29b-41d4-a716-446655440001",
+  "version": 1,
+  "type": "OFFER",
+  "timestamp": "2025-10-26T15:00:00Z",
+  "in_response_to": null,
+  "hop_count": 0,
+  "public": {
+    "category": {
+      "primary": "COORDINATION",
+      "secondary": ["Physical_space", "Social_connection"],
+      "attributes": {
+        "space_type": ["Indoor_public"],
+        "capacity": ["Small_items", "Medium_boxes", "Refrigeration"],
+        "facilitator_role": ["Active_presence", "Translator"],
+        "languages": ["en", "es"],
+        "hours": "Business_hours"
+      }
+    },
+    "location": {
+      "coords": "37.425±0.0001,-122.082±0.0001",
+      "precision_level": "high"
+    },
+    "time": {
+      "pattern": "Recurring",
+      "windows": [
+        {
+          "days": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+          "time_blocks": ["Morning_9-12", "Midday_12-15", "Afternoon_15-18"]
+        }
+      ],
+      "recurrence": {
+        "frequency": "Daily",
+        "duration": "Ongoing",
+        "expires": null
+      }
+    },
+    "quantity": "Ongoing_supply",
+    "recurrence_pattern": "Ongoing"
+  },
+  "coordination_key": "NCowBQYDK2VuAyEB...",
+  "encrypted_payloads": [],
+  "metadata": {
+    "relay_eligible": true,
+    "expires_at": null,
+    "priority": "normal"
+  }
+}

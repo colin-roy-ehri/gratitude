@@ -1,0 +1,23 @@
+{
+  "message_id": "850e8400-e29b-41d4-a716-446655440003",
+  "version": 1,
+  "type": "COMPLETION",
+  "timestamp": "2025-10-26T18:00:00Z",
+  "in_response_to": null,
+  "related_to": "550e8400-e29b-41d4-a716-446655440000",
+  "hop_count": 0,
+  "public": {},
+  "anonymous_summary": {
+    "category": "FOOD",
+    "area": "37.42±0.01,-122.08±0.01",
+    "time": "Today",
+    "multiple_helpers": false
+  },
+  "coordination_key": null,
+  "encrypted_payloads": [],
+  "metadata": {
+    "relay_eligible": true,
+    "expires_at": "2025-10-27T18:00:00Z",
+    "priority": "low"
+  }
+}

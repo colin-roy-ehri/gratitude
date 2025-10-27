@@ -1,0 +1,34 @@
+// Offerer responding to requester AND copying broker
+{
+  "message_id": "offer-123",
+  "type": "COORDINATION",
+  "in_response_to": "need-456",
+  
+  "public": {
+    "category": {"primary": "FOOD"},
+    "location": {"coords": "37.423±0.001"}
+  },
+  
+  "encrypted_payloads": [
+    {
+      "recipient_key": "requester_public_key",
+      "payload": "encrypted{
+        contact_name: 'River',
+        time_details: {...},
+        note: 'I included Elder_at_library for coordination help',
+        my_coordination_key: '...'
+      }"
+    },
+    {
+      "recipient_key": "broker_public_key",
+      "payload": "encrypted{
+        context: 'Helping coordinate food delivery',
+        requester_details: 'Maria',
+        my_details: 'River, available Tue/Thu',
+        role_request: 'Can you facilitate at library?'
+      }"
+    }
+  ],
+  
+  "coordination_key": "my_public_key"
+}

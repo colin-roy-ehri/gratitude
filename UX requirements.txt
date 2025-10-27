@@ -1,0 +1,480 @@
+Key UI Features
+Visual Design Principles
+
+Large, clear tap targets (min 44x44pt)
+High contrast for readability
+Icons + text for clarity
+Generous whitespace to reduce overwhelm
+Consistent emoji/icons for categories
+Clear visual hierarchy (primary action obvious)
+Progressive disclosure (complexity hidden until needed)
+
+Interaction Patterns
+
+Wizard for creation (step-by-step, not overwhelming)
+Tabs for browsing (Requests / Offers / Activity)
+Cards for items (scannable, tappable)
+Modal/sheet for details (focused view)
+Bottom buttons (easy thumb access)
+Swipe gestures (minimal, optional)
+
+
+The app must work for:
+├── People with limited literacy
+├── People with limited tech experience
+├── Elderly users with vision/dexterity challenges
+├── Young teens (middle school age)
+├── Non-native speakers of local language
+├── People with disabilities (screen readers, motor impairments)
+├── People with limited or older devices
+└── People in crisis/stress (cognitive load matters)
+
+This rules out:
+✗ Text-heavy interfaces
+✗ Complex multi-step workflows
+✗ Tiny tap targets
+✗ Relying on reading long instructions
+✗ Assuming smartphone literacy
+```
+
+### 2. **Emotional Safety Requirements**
+```
+The app must feel:
+├── Hopeful, not depressing
+├── Dignified, not charity-like
+├── Empowering, not helpless
+├── Connected, not isolated
+├── Safe, not exposed
+└── Calm, not urgent/stressful
+
+Users should feel:
+✓ "I can ask without shame"
+✓ "I can offer without judgment"
+✓ "This is a community, not a transaction"
+✓ "I'm in control of my information"
+✓ "Someone will help" (but not entitled)
+✓ "I'm helping real people" (but not burdened)
+
+This rules out:
+✗ Guilt-inducing language
+✗ Scarcity messaging ("Only 2 left!")
+✗ Urgency manipulation ("Act now!")
+✗ Performative displays of need/suffering
+✗ Gamification that creates pressure
+```
+
+### 3. **Privacy Requirements**
+```
+Users must be able to:
+├── Understand what's public vs private (at a glance)
+├── Make privacy choices easily
+├── Feel confident their choices are respected
+├── Change privacy settings mid-conversation
+├── Not expose themselves accidentally
+└── Trust the app isn't tracking them
+
+Visual indicators:
+✓ Clear public/private boundaries
+✓ "Who can see this?" always visible
+✓ Warnings before sharing sensitive info
+✓ No accidental broadcasts
+
+This rules out:
+✗ Hidden privacy settings
+✗ Confusing "share" buttons
+✗ Opt-out privacy (must be opt-in)
+✗ Surprising information disclosure
+```
+
+### 4. **Cognitive Load Requirements**
+```
+The app should:
+├── Require minimal decisions per screen
+├── Have obvious "next step"
+├── Avoid overwhelming with options
+├── Remember user's patterns/preferences
+├── Provide smart defaults
+├── Allow quick actions when appropriate
+└── Never leave user confused about what to do
+
+Maximum 3-5 choices per screen
+Primary action always clear
+Escape hatches always available
+```
+
+### 5. **Cultural Adaptability Requirements**
+```
+The app must:
+├── Work across languages (icons + minimal text)
+├── Not assume Western social norms
+├── Respect different concepts of privacy
+├── Support different family/community structures
+├── Not require sharing practices that feel unsafe culturally
+├── Allow for collectivist vs individualist approaches
+└── Respect different time/scheduling norms
+
+Examples:
+- Some cultures: asking for help is shameful → needs extra privacy
+- Some cultures: collective good > individual → easy multi-helper coordination
+- Some cultures: strict gender separation → ability to specify
+- Some cultures: elder respect central → broker system essential
+```
+
+### 6. **Trust Building Requirements**
+```
+The app must help users build trust through:
+├── Gradual disclosure (don't demand trust upfront)
+├── Reciprocity visibility (giving and receiving both valued)
+├── Community presence indicators (others nearby)
+├── Pattern recognition (regular helpers, regular needs)
+├── Safety mechanisms (brokers, public meetings)
+└── Transparent operations (no hidden algorithms)
+
+Users need to feel:
+"I understand how this works"
+"I can start small and build confidence"
+"The community is real and active"
+"There are safety nets if something goes wrong"
+"No one is gaming the system"
+```
+
+### 7. **Efficiency Requirements**
+```
+For requesters:
+├── Express need quickly (< 30 seconds for common need)
+├── Understand responses at a glance
+├── Coordinate pickup/delivery easily
+└── Feel satisfied, not overwhelmed by choices
+
+For offerers:
+├── See relevant needs quickly
+├── Offer help without extensive process
+├── Coordinate simply
+└── Feel good about helping, not burdened
+
+This rules out:
+✗ Long forms
+✗ Required fields that aren't essential
+✗ Multi-step wizards for simple actions
+✗ Excessive notifications
+```
+
+### 8. **Offline/Low-Connectivity Requirements**
+```
+The app must:
+├── Work with BLE only (no internet)
+├── Function with intermittent connectivity
+├── Queue messages intelligently
+├── Show clear status (online/offline/syncing)
+├── Not lose data during disconnection
+└── Adapt UI based on connectivity
+
+Users shouldn't:
+✗ Get errors about connectivity
+✗ Wonder if message sent
+✗ Lose work due to disconnection
+✗ Need to retry failed operations
+```
+
+## User Experience Goals (Aspirational)
+
+### Goal 1: **Reduce Shame, Increase Dignity**
+```
+Success looks like:
+- User feels comfortable asking for help
+- No visual hierarchy of needs (all equal)
+- Giving and receiving feel equivalent
+- No "donor" vs "recipient" language/design
+- Can ask without revealing desperation
+- Can offer without feeling like savior
+
+Failure looks like:
+- Bright red "URGENT" badges
+- Counter showing "people helped" (charity scoring)
+- Sad faces or poverty imagery
+- "Please help this person" language
+- Begging/pleading tone
+```
+
+### Goal 2: **Foster Community, Not Transactions**
+```
+Success looks like:
+- Seeing others' needs feels connective, not transactional
+- Helping feels like participation, not obligation
+- Both parties feel like community members
+- Regular patterns create familiarity
+- Good news broadcasts create collective joy
+- No "marketplace" feel
+
+Failure looks like:
+- Shopping cart metaphors
+- "Buy/sell" language
+- Star ratings
+- Transaction histories
+- Vendor/customer dynamics
+```
+
+### Goal 3: **Empower Choice, Don't Force Disclosure**
+```
+Success looks like:
+- Every disclosure is optional with clear alternative
+- User always knows who sees what
+- Can participate with minimal exposure
+- Can increase sharing as trust builds
+- No dead ends (always a path forward)
+- Defaults protect privacy but aren't limiting
+
+Failure looks like:
+- "You must provide X to continue"
+- Unclear what's being shared
+- All-or-nothing disclosure
+- Locked out for wanting more privacy
+```
+
+### Goal 4: **Make Mutual Aid Feel Natural**
+```
+Success looks like:
+- Interface fades into background
+- Actions feel intuitive, not learned
+- No technical jargon
+- Patterns emerge organically
+- Users teach each other
+- Works like community always has, just digital
+
+Failure looks like:
+- "Check your dashboard"
+- "Complete your profile"
+- Gamification badges
+- Algorithm suggestions that feel robotic
+- Tech-forward language
+```
+
+### Goal 5: **Create Hope, Not Despair**
+```
+Success looks like:
+- First screen shows activity, connection, possibility
+- Empty states feel like "building" not "nothing here"
+- Unmet needs aren't highlighted as failures
+- Good news is visible
+- Feels alive, not desperate
+- User leaves feeling connected
+
+Failure looks like:
+- Lists of urgent unmet needs
+- Countdown timers
+- "No one has helped yet"
+- Desperation indicators
+- Doom scrolling through suffering
+```
+
+## Specific UX Requirements
+
+### Information Architecture
+```
+Primary user actions (must be one tap from home):
+1. Express a need
+2. Offer help
+3. See matches/responses
+4. Coordinate a match
+5. See community activity (good news)
+
+Secondary actions (2 taps):
+- Adjust message settings
+- Add broker to coordination
+- See my active requests/offers
+- Manage notifications
+
+Tertiary actions (3+ taps or rarely used):
+- Settings
+- Help/education
+- About/privacy info
+```
+
+### Navigation Requirements
+```
+Users must always know:
+- Where am I? (clear context)
+- What can I do here? (clear affordances)
+- How do I go back? (escape hatch)
+- Where's my stuff? (my messages/coordination)
+
+Bottom navigation or tab bar showing:
+- Current section
+- Number of unread/active items
+- Always accessible (persistent)
+```
+
+### Visual Hierarchy Requirements
+```
+Priority 1 (largest, most prominent):
+- Primary action on each screen
+- Active matches/coordination
+- Clear next step
+
+Priority 2 (visible, secondary):
+- Context information
+- Alternative actions
+- Status indicators
+
+Priority 3 (subtle, available):
+- Settings/options
+- Help text
+- Additional info
+```
+
+### Feedback Requirements
+```
+User must always know:
+- Did my action work? (immediate feedback)
+- What happened? (clear outcome)
+- What happens next? (set expectations)
+- Is something wrong? (error states that help)
+
+Feedback should be:
+- Immediate (< 100ms for local actions)
+- Clear (no ambiguity)
+- Encouraging (positive tone)
+- Actionable (what to do if error)
+```
+
+### Input Requirements
+```
+Minimize typing:
+- Use selection over input
+- Use icons over text
+- Use smart defaults
+- Remember common choices
+- Suggest based on context
+
+When input needed:
+- Large tap targets (min 44x44pt)
+- Clear labels
+- Input validation that helps, not blocks
+- Auto-complete where appropriate
+```
+
+### Notification Requirements
+```
+Notifications must:
+- Be meaningful (not spam)
+- Be actionable (can respond directly)
+- Respect user's time
+- Be configurable
+- Not create anxiety
+
+Notify for:
+✓ New match for your need/offer
+✓ Coordination message received
+✓ Meeting reminder (optional)
+✓ Good news in your area (optional)
+
+Don't notify for:
+✗ Generic activity
+✗ Promotional content
+✗ Pressure to act
+✗ Unmet needs (creates guilt)
+```
+
+### Onboarding Requirements
+```
+First-time user experience must:
+- Work immediately (no account setup)
+- Teach by doing (not walls of text)
+- Allow skip (explore first, learn later)
+- Set appropriate expectations
+- Build trust before asking for anything
+- Feel welcoming, not gate-keeping
+
+Onboarding should:
+- Show example messages (with "these aren't real" note)
+- Let user browse before posting
+- Explain privacy clearly but briefly
+- Demonstrate one simple action
+- Get out of the way quickly
+```
+
+## Anti-Requirements (What We DON'T Want)
+
+### Anti-Requirement 1: Social Media Patterns
+```
+NO:
+✗ Infinite scroll
+✗ Like/heart buttons
+✗ Share counts
+✗ "Trending" lists
+✗ Algorithmic feed
+✗ Engagement optimization
+✗ FOMO creation
+✗ Comparison mechanics
+```
+
+### Anti-Requirement 2: Marketplace Patterns
+```
+NO:
+✗ Product listings
+✗ Shopping carts
+✗ Checkout flows
+✗ Buyer/seller roles
+✗ Reviews/ratings
+✗ Featured items
+✗ Promoted posts
+```
+
+### Anti-Requirement 3: Quantified Self Patterns
+```
+NO:
+✗ "You've helped X people"
+✗ Streaks
+✗ Leaderboards
+✗ Achievement badges
+✗ Profile completion percentages
+✗ Activity graphs
+✗ Comparison to others
+```
+
+### Anti-Requirement 4: Corporate App Patterns
+```
+NO:
+✗ "Complete your profile"
+✗ "Invite friends for rewards"
+✗ Email collection
+✗ Newsletter signups
+✗ "Rate this app"
+✗ Premium features
+✗ Ads (obviously)
+```
+
+## Success Metrics (How We Know It's Working)
+
+### Qualitative Success
+```
+Users report:
+✓ "I felt comfortable asking for help"
+✓ "I could figure out what to do"
+✓ "I felt safe and in control"
+✓ "I felt connected to my community"
+✓ "It worked when I needed it"
+✓ "Helping felt good, not burdensome"
+```
+
+### Behavioral Success
+```
+Patterns we want to see:
+✓ Needs get matched quickly
+✓ Both requesting and offering are common
+✓ People use brokers when appropriate
+✓ Coordination happens smoothly
+✓ Repeat participation (but not addiction)
+✓ Cross-demographic engagement
+✓ Organic community patterns emerge
+```
+
+### Technical Success
+```
+System performs:
+✓ Works offline reliably
+✓ Low battery drain
+✓ Fast (< 1 second for common actions)
+✓ No crashes or data loss
+✓ Privacy guarantees hold
+✓ Scales to community size

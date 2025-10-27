@@ -1,0 +1,24 @@
+// Offerer responding to requester only
+{
+  "message_id": "offer-123",
+  "type": "COORDINATION",
+  "in_response_to": "need-456",
+  
+  "public": {
+    "category": {"primary": "FOOD"},
+    "location": {"coords": "37.423±0.001"}
+  },
+  
+  "encrypted_payloads": [
+    {
+      "recipient_key": "requester_public_key",
+      "payload": "encrypted{
+        contact_name: 'River',
+        time_details: {...},
+        my_coordination_key: '...'
+      }"
+    }
+  ],
+  
+  "coordination_key": "my_public_key"
+}

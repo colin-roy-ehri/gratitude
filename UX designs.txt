@@ -1,0 +1,889 @@
+┌─────────────────────────────────────┐
+│                                     │
+│                                     │
+│            🤝                       │
+│                                     │
+│      Community Mutual Aid          │
+│                                     │
+│   Help your neighbors.              │
+│   Get help when you need it.        │
+│                                     │
+│                                     │
+│   • No sign up required             │
+│   • Your privacy protected          │
+│   • Works offline                   │
+│                                     │
+│                                     │
+│                                     │
+│      [Get Started]                  │
+│                                     │
+│                                     │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Screen 2: How It Works (Brief, Swipeable)
+```
+┌─────────────────────────────────────┐
+│                                     │
+│                                     │
+│            📝                       │
+│                                     │
+│         Make Requests               │
+│                                     │
+│    Ask for what you need            │
+│    Food, rides, help, or just       │
+│    someone to talk to               │
+│                                     │
+│                                     │
+│                                     │
+│                                     │
+│                                     │
+│        [Next]  [Skip]               │
+│        ● ○ ○                        │
+│                                     │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│                                     │
+│                                     │
+│            🎁                       │
+│                                     │
+│         Make Offers                 │
+│                                     │
+│    Share what you can give          │
+│    Your time, resources, or         │
+│    a helping hand                   │
+│                                     │
+│                                     │
+│                                     │
+│                                     │
+│                                     │
+│        [Next]  [Skip]               │
+│        ○ ● ○                        │
+│                                     │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│                                     │
+│                                     │
+│            🔒                       │
+│                                     │
+│         Stay Private                │
+│                                     │
+│    You choose what to share         │
+│    and when. Your details stay      │
+│    private until you're ready.      │
+│                                     │
+│                                     │
+│                                     │
+│                                     │
+│                                     │
+│        [Start]  [Back]              │
+│        ○ ○ ●                        │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+## Main Screen (Home)
+
+### Option A: Empty State (No Activity Yet)
+```
+┌─────────────────────────────────────┐
+│  Requests    Offers    Activity     │
+├─────────────────────────────────────┤
+│                                     │
+│                                     │
+│          🌱                         │
+│                                     │
+│    Building Your Network            │
+│                                     │
+│  No requests or offers nearby yet.  │
+│  Be the first to start!             │
+│                                     │
+│                                     │
+│  Grow your community:               │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │                             │   │
+│  │      [QR CODE]              │   │
+│  │                             │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  Share this code with neighbors     │
+│  to get started                     │
+│                                     │
+│  [Share QR Code]                    │
+│                                     │
+├─────────────────────────────────────┤
+│                                     │
+│   [➕ Make Request]  [🎁 Make Offer]│
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Option B: Active State (Messages Present)
+```
+┌─────────────────────────────────────┐
+│ ◉Requests    ○Offers    ○Activity   │
+├─────────────────────────────────────┤
+│                                     │
+│ 🍽️ Food - Groceries                │
+│ Vegetarian, Family size             │
+│ 📍 ~0.5 km • 🕐 This week           │
+│                            [Offer]  │
+│ ─────────────────────────────────  │
+│                                     │
+│ 🚗 Transportation - Ride            │
+│ Medical appointment                 │
+│ 📍 ~0.8 km • 🕐 Tomorrow morning    │
+│                            [Offer]  │
+│ ─────────────────────────────────  │
+│                                     │
+│ 🤝 Coordination - Space             │
+│ Library, can hold items             │
+│ 📍 ~0.3 km • 🕐 Mon-Fri 9-17       │
+│                            [Note]   │
+│ ─────────────────────────────────  │
+│                                     │
+│ 👕 Clothing - Kids clothes          │
+│ Size 5-7, any condition             │
+│ 📍 ~1.2 km • 🕐 Flexible            │
+│                            [Offer]  │
+│ ─────────────────────────────────  │
+│                                     │
+│             [Load More]             │
+│                                     │
+├─────────────────────────────────────┤
+│  [➕ Make Request]  [🎁 Make Offer] │
+└─────────────────────────────────────┘
+```
+
+### Tab: Offers View
+```
+┌─────────────────────────────────────┐
+│ ○Requests    ◉Offers    ○Activity   │
+├─────────────────────────────────────┤
+│                                     │
+│ 🍽️ Food - Meal ready                │
+│ Home cooked, vegetarian             │
+│ 📍 ~0.4 km • 🕐 Today evening       │
+│                         [Request]   │
+│ ─────────────────────────────────  │
+│                                     │
+│ 🚗 Transportation - Ride            │
+│ Cross town, wheelchair access       │
+│ 📍 ~0.6 km • 🕐 Weekday mornings    │
+│                         [Request]   │
+│ ─────────────────────────────────  │
+│                                     │
+│ 🤝 Coordination - Social help       │
+│ Translation (English/Spanish)       │
+│ 📍 ~0.9 km • 🕐 Flexible            │
+│                         [Request]   │
+│ ─────────────────────────────────  │
+│                                     │
+│ 📚 Education - Tutoring             │
+│ Math homework help, grades 5-8      │
+│ 📍 ~0.7 km • 🕐 Afternoons          │
+│                         [Request]   │
+│ ─────────────────────────────────  │
+│                                     │
+│             [Load More]             │
+│                                     │
+├─────────────────────────────────────┤
+│  [➕ Make Request]  [🎁 Make Offer] │
+└─────────────────────────────────────┘
+```
+
+### Tab: Activity View (Good News)
+```
+┌─────────────────────────────────────┐
+│ ○Requests    ○Offers    ◉Activity   │
+├─────────────────────────────────────┤
+│                                     │
+│  Recent mutual aid in your area:    │
+│                                     │
+│  ✨ Food shared                     │
+│     ~1 km away, 2 hours ago         │
+│                                     │
+│  ✨ Ride provided                   │
+│     ~0.5 km away, Today morning     │
+│                                     │
+│  ✨ Clothing exchanged              │
+│     ~0.8 km away, Yesterday         │
+│                                     │
+│  ✨ Coordination helped             │
+│     ~0.3 km away, 3 hours ago       │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  📊 This week in your area:         │
+│                                     │
+│     15 requests made                │
+│     12 offers posted                │
+│      8 matches coordinated          │
+│                                     │
+│  Your community is active! 🌟       │
+│                                     │
+│                                     │
+├─────────────────────────────────────┤
+│  [➕ Make Request]  [🎁 Make Offer] │
+└─────────────────────────────────────┘
+```
+
+## Making a Request (Wizard Flow)
+
+### Step 1: Choose Category
+```
+┌─────────────────────────────────────┐
+│ ← Make a Request                    │
+├─────────────────────────────────────┤
+│                                     │
+│  What do you need?                  │
+│                                     │
+│  ┌──────────┐ ┌──────────┐        │
+│  │   🍽️     │ │   💧     │        │
+│  │  Food    │ │  Water   │        │
+│  └──────────┘ └──────────┘        │
+│                                     │
+│  ┌──────────┐ ┌──────────┐        │
+│  │   🏠     │ │   👕     │        │
+│  │ Shelter  │ │ Clothing │        │
+│  └──────────┘ └──────────┘        │
+│                                     │
+│  ┌──────────┐ ┌──────────┐        │
+│  │   🚗     │ │   🤝     │        │
+│  │Transport │ │Coordination│      │
+│  └──────────┘ └──────────┘        │
+│                                     │
+│  ┌──────────┐ ┌──────────┐        │
+│  │   📚     │ │   🏥     │        │
+│  │Education │ │ Medical  │        │
+│  └──────────┘ └──────────┘        │
+│                                     │
+│         [See All Categories]        │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Step 2: Specify Type (Example: Food)
+```
+┌─────────────────────────────────────┐
+│ ← Food Request                      │
+├─────────────────────────────────────┤
+│                                     │
+│  What kind of food?                 │
+│                                     │
+│  ◉ Meal (ready to eat)              │
+│  ○ Groceries (unprepared)           │
+│  ○ Ingredients (for cooking)        │
+│  ○ Baby formula                     │
+│  ○ Pet food                         │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Any dietary needs?                 │
+│                                     │
+│  ☐ Vegetarian                       │
+│  ☐ Vegan                            │
+│  ☐ Halal                            │
+│  ☐ Kosher                           │
+│  ☐ Gluten-free                      │
+│  ☐ Allergy-specific                 │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  How much?                          │
+│                                     │
+│  ○ Single meal                      │
+│  ◉ Family (2-4 people)              │
+│  ○ Family (5+ people)               │
+│                                     │
+│                                     │
+│              [Next]                 │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Step 3: When Do You Need It?
+```
+┌─────────────────────────────────────┐
+│ ← When?                             │
+├─────────────────────────────────────┤
+│                                     │
+│  When do you need this?             │
+│                                     │
+│  ◉ Today                            │
+│  ○ Tomorrow                         │
+│  ○ This week                        │
+│  ○ Next week                        │
+│  ○ Flexible / Ongoing               │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  What time works?                   │
+│  (Select all that work)             │
+│                                     │
+│  ☐ Morning (6-12)                   │
+│  ☑ Afternoon (12-18)                │
+│  ☑ Evening (18-21)                  │
+│  ☐ Night (21-24)                    │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Is this a one-time need?           │
+│                                     │
+│  ◉ One time                         │
+│  ○ Recurring (weekly)               │
+│  ○ Recurring (monthly)              │
+│  ○ Ongoing                          │
+│                                     │
+│                                     │
+│              [Next]                 │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Step 4: Location & Privacy
+```
+┌─────────────────────────────────────┐
+│ ← Location                          │
+├─────────────────────────────────────┤
+│                                     │
+│  Where are you located?             │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │         [Map View]          │   │
+│  │                             │   │
+│  │         You are here        │   │
+│  │            📍               │   │
+│  │        (blue dot)           │   │
+│  │                             │   │
+│  │    [Detected automatically] │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  Others will see:                   │
+│  ~1 km area around you              │
+│                                     │
+│  🔒 Your exact location stays       │
+│     private until you choose        │
+│     to share it                     │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Want to coordinate through         │
+│  a broker?                          │
+│                                     │
+│  ○ No, direct is fine               │
+│  ◉ Yes, add broker for safety       │
+│                                     │
+│              [Next]                 │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Step 5: Review & Post
+```
+┌─────────────────────────────────────┐
+│ ← Review Request                    │
+├─────────────────────────────────────┤
+│                                     │
+│  Your request:                      │
+│                                     │
+│  🍽️ Food - Meal                    │
+│  Vegetarian, Family (2-4)           │
+│                                     │
+│  📍 Location: ~1 km area            │
+│  🕐 Time: Today, Afternoon/Evening  │
+│  🔁 One time                        │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Who will see this:                 │
+│                                     │
+│  ✓ Others nearby (~5 km)            │
+│  ✓ Category & general info          │
+│  ✓ Approximate location             │
+│  ✓ General time                     │
+│                                     │
+│  Won't see:                         │
+│  ✗ Your exact address               │
+│  ✗ Your name                        │
+│  ✗ Any personal details             │
+│                                     │
+│  You'll share details after         │
+│  someone offers to help.            │
+│                                     │
+│  [Edit]      [Post Request]         │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Step 6: Posted Confirmation
+```
+┌─────────────────────────────────────┐
+│                                     │
+│                                     │
+│             ✓                       │
+│                                     │
+│      Request Posted!                │
+│                                     │
+│  Your request is now visible        │
+│  to others nearby.                  │
+│                                     │
+│  We'll notify you when someone      │
+│  offers to help.                    │
+│                                     │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  While you wait:                    │
+│                                     │
+│  🌱 Grow your network               │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │      [QR CODE]              │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  Share with neighbors to            │
+│  build your community               │
+│                                     │
+│  [Share Code]                       │
+│                                     │
+│  [View My Requests]  [Go to Home]   │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+## Making an Offer (Wizard Flow - Similar Structure)
+
+### Step 1: Choose Category
+```
+┌─────────────────────────────────────┐
+│ ← Make an Offer                     │
+├─────────────────────────────────────┤
+│                                     │
+│  What can you offer?                │
+│                                     │
+│  ┌──────────┐ ┌──────────┐        │
+│  │   🍽️     │ │   💧     │        │
+│  │  Food    │ │  Water   │        │
+│  └──────────┘ └──────────┘        │
+│                                     │
+│  ┌──────────┐ ┌──────────┐        │
+│  │   🚗     │ │   🤝     │        │
+│  │Transport │ │Coordination│      │
+│  └──────────┘ └──────────┘        │
+│                                     │
+│  ┌──────────┐ ┌──────────┐        │
+│  │   📚     │ │   👕     │        │
+│  │Education │ │ Clothing │        │
+│  └──────────┘ └──────────┘        │
+│                                     │
+│  ┌──────────┐                      │
+│  │   🏠     │                      │
+│  │ Shelter  │                      │
+│  └──────────┘                      │
+│                                     │
+│         [See All Categories]        │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Step 2: Offer Details (Example: Coordination/Broker)
+```
+┌─────────────────────────────────────┐
+│ ← Coordination Offer                │
+├─────────────────────────────────────┤
+│                                     │
+│  How can you help coordinate?       │
+│                                     │
+│  ☑ Provide space for exchanges      │
+│  ☑ Facilitate introductions         │
+│  ☐ Store items temporarily          │
+│  ☐ Translate/interpret              │
+│  ☐ Be a witness for safety          │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Where?                             │
+│                                     │
+│  ◉ My location (home/business)      │
+│  ○ Public place I frequent          │
+│  ○ Flexible location                │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  What's your space like?            │
+│                                     │
+│  ☑ Indoor, public                   │
+│  ☐ Indoor, private                  │
+│  ☐ Outdoor, covered                 │
+│  ☐ Can store refrigerated items     │
+│  ☑ Wheelchair accessible            │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Languages you speak:               │
+│                                     │
+│  ☑ English                          │
+│  ☑ Spanish                          │
+│  ☐ Other                            │
+│                                     │
+│              [Next]                 │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+## Viewing Matches (Seeing Responses to Your Request)
+
+### Your Request with Matches
+```
+┌─────────────────────────────────────┐
+│ ← Your Requests                     │
+├─────────────────────────────────────┤
+│                                     │
+│  🍽️ Food - Meal                    │
+│  Vegetarian, Family (2-4)           │
+│  Today, Afternoon/Evening           │
+│  Posted 2 hours ago                 │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  3 offers to help!                  │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │ 🎁 Offer from River          │   │
+│  │                              │   │
+│  │ "I can help with groceries"  │   │
+│  │                              │   │
+│  │ Available:                   │   │
+│  │ • Tuesday 6-8 PM             │   │
+│  │ • Wednesday 3-5 PM           │   │
+│  │                              │   │
+│  │ ~0.4 km away                 │   │
+│  │                              │   │
+│  │    [View Details]            │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │ 🎁 Anonymous offer           │   │
+│  │                              │   │
+│  │ "Happy to help"              │   │
+│  │                              │   │
+│  │ Available:                   │   │
+│  │ • Today evening              │   │
+│  │                              │   │
+│  │ ~0.6 km away                 │   │
+│  │                              │   │
+│  │    [View Details]            │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │ 🤝 Broker: Elder_at_library  │   │
+│  │                              │   │
+│  │ "Can coordinate at library"  │   │
+│  │                              │   │
+│  │ Available:                   │   │
+│  │ • Mon-Fri 9-17               │   │
+│  │                              │   │
+│  │ ~0.3 km away                 │   │
+│  │                              │   │
+│  │    [View Details]            │   │
+│  └─────────────────────────────┘   │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Match Details View
+```
+┌─────────────────────────────────────┐
+│ ← Offer from River                  │
+├─────────────────────────────────────┤
+│                                     │
+│  🎁 Offer: Food                     │
+│                                     │
+│  "I can help with groceries"        │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Available times:                   │
+│  • Tuesday 6-8 PM                   │
+│  • Wednesday 3-5 PM                 │
+│                                     │
+│  Location: ~0.4 km from you         │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │         [Map View]          │   │
+│  │                             │   │
+│  │    Your location: 🔵        │   │
+│  │                             │   │
+│  │    Their area: ⭕           │   │
+│  │    (approximate)            │   │
+│  │                             │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  🔒 They'll see your exact location │
+│     and contact details when you    │
+│     accept this offer.              │
+│                                     │
+│                                     │
+│  [Decline]       [Accept & Coordinate]│
+│                                     │
+└─────────────────────────────────────┘
+```
+
+## Coordination Flow
+
+### Accept and Share Details
+```
+┌─────────────────────────────────────┐
+│ ← Coordinate with River             │
+├─────────────────────────────────────┤
+│                                     │
+│  Choose a time:                     │
+│                                     │
+│  ◉ Tuesday 6-8 PM                   │
+│  ○ Wednesday 3-5 PM                 │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Where should they meet you?        │
+│                                     │
+│  ◉ My address                       │
+│  ○ Public place (use map)           │
+│  ○ Broker location                  │
+│                                     │
+│  [If "My address" selected:]        │
+│                                     │
+│  Building: [12]  Floor: [3]  Unit: [5A]│
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  How will they recognize you?       │
+│  (optional)                         │
+│                                     │
+│  ☑ Blue jacket                      │
+│  ☐ With dog                         │
+│  ☐ Red car                          │
+│  ☐ At front entrance                │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Share your name? (optional)        │
+│                                     │
+│  ◉ Yes: [Maria________]             │
+│  ○ Stay anonymous                   │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Add a broker for safety?           │
+│                                     │
+│  ○ No thanks                        │
+│  ◉ Yes: Elder_at_library            │
+│     (They'll be able to see this    │
+│      coordination)                  │
+│                                     │
+│                                     │
+│         [Send Details]              │
+│         🔒 Encrypted                │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Coordination Sent
+```
+┌─────────────────────────────────────┐
+│                                     │
+│             ✓                       │
+│                                     │
+│     Details Shared!                 │
+│                                     │
+│  River can now see:                 │
+│  • Your location (Bldg 12, Unit 5A) │
+│  • Time (Tuesday 6-8 PM)            │
+│  • Your name (Maria)                │
+│  • How to find you (Blue jacket)    │
+│                                     │
+│  Elder_at_library can also see      │
+│  these details for safety.          │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Next steps:                        │
+│                                     │
+│  • River will confirm               │
+│  • You'll get a reminder Tuesday    │
+│  • Meet at your location            │
+│                                     │
+│                                     │
+│  [View Coordination]  [Go to Home]  │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### Active Coordination View
+```
+┌─────────────────────────────────────┐
+│ ← Coordination with River           │
+├─────────────────────────────────────┤
+│                                     │
+│  🍽️ Food pickup                    │
+│  🔒 Encrypted conversation          │
+│  👁️ Elder_at_library observing      │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  River:                             │
+│  "Great! I'll bring vegetarian      │
+│   groceries Tuesday around 6:30"    │
+│  2 hours ago                        │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  You:                               │
+│  "Perfect! Bldg 12, Unit 5A.        │
+│   I'll be in a blue jacket"         │
+│  1 hour ago                         │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  River:                             │
+│  "See you then! 👍"                 │
+│  30 minutes ago                     │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  📍 Meeting: Bldg 12, Unit 5A       │
+│  🕐 Time: Tuesday 6:30 PM           │
+│  👤 River (with groceries)          │
+│  👁️ Broker aware                    │
+│                                     │
+│  ┌──────────────────────────────┐  │
+│  │ [Send message to River]      │  │
+│  └──────────────────────────────┘  │
+│                                     │
+│  [Get Directions]                   │
+│  [Message Broker]                   │
+│  [Mark as Complete]                 │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+## My Activity Screen
+```
+┌─────────────────────────────────────┐
+│  My Requests    My Offers    ⋮      │
+├─────────────────────────────────────┤
+│                                     │
+│  Active (2)                         │
+│                                     │
+│  🍽️ Food - Meal                    │
+│  3 offers • Coordinating with River │
+│  Pickup: Tuesday 6:30 PM            │
+│                           [View]    │
+│  ─────────────────────────────────  │
+│                                     │
+│  📚 Education - Tutoring            │
+│  1 offer • Waiting for response     │
+│  Posted 3 hours ago                 │
+│                           [View]    │
+│  ─────────────────────────────────  │
+│                                     │
+│  Completed (5)                      │
+│                                     │
+│  🚗 Transportation                  │
+│  Completed yesterday                │
+│                                     │
+│  👕 Clothing exchange               │
+│  Completed 3 days ago               │
+│                                     │
+│  🍽️ Food                           │
+│  Completed last week                │
+│                                     │
+│         [View All]                  │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  No active requests?                │
+│                                     │
+│  [Make New Request]                 │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+## QR Code Sharing
+
+### Share Screen
+```
+┌─────────────────────────────────────┐
+│ ← Grow Your Network                 │
+├─────────────────────────────────────┤
+│                                     │
+│  Share with neighbors to build      │
+│  your mutual aid community          │
+│                                     │
+│  ┌─────────────────────────────┐   │
+│  │                             │   │
+│  │                             │   │
+│  │       [QR CODE]             │   │
+│  │                             │   │
+│  │                             │   │
+│  └─────────────────────────────┘   │
+│                                     │
+│  Scan to download app               │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  Or share link:                     │
+│                                     │
+│  [Share Link]                       │
+│                                     │
+│  ─────────────────────────────────  │
+│                                     │
+│  📱 Print this code to post:        │
+│  • Community bulletin boards        │
+│  • Local shops                      │
+│  • Libraries                        │
+│  • Places of worship                │
+│                                     │
+│  [Save Image] [Print]               │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+### QR Code Poster (Printable)
+```
+┌─────────────────────────────────────┐
+│                                     │
+│      🤝 Community Mutual Aid        │
+│                                     │
+│                                     │
+│      ┌─────────────────┐           │
+│      │                 │           │
+│      │                 │           │
+│      │   [QR CODE]     │           │
+│      │                 │           │
+│      │                 │           │
+│      └─────────────────┘           │
+│                                     │
+│      Scan to join                   │
+│                                     │
+│                                     │
+│  Help your neighbors.               │
+│  Get help when you need it.         │
+│                                     │
+│  • Free to use                      │
+│  • Private & secure                 │
+│  • No sign up required              │
+│                                     │
+│                                     │
+│  ─────── ─────── ───────           │
+│  [QR]   [QR]    [QR]               │
+│  ─────── ─────── ───────           │
+│  Tear-off strips for easy sharing   │
+│                                     │
+└─────────────────────────────────────┘
