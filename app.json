@@ -33,13 +33,21 @@
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "FOREGROUND_SERVICE"
-      ]
+      ],
+      "compileSdkVersion": 34,
+      "targetSdkVersion": 34,
+      "buildToolsVersion": "34.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "88ebd728-1980-43e1-a53f-ee146e1de1e6"
+      }
+    }
   }
 }
