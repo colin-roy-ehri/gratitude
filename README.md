@@ -171,6 +171,33 @@ This app is designed with privacy as a core principle:
 ## Contributing
 
 This is currently in POC (Proof of Concept) phase. Contributions will be welcomed after initial testing with local dev network.
+Here is an android Preview version: 
+✔ Build finished
+
+  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  █ ▄▄▄▄▄ █▄▄████▀█ ▀▀▄█ ▀ ▀▀ █▄█ ▄▄▄▄▄ █
+  █ █   █ █ ▀█   ▄██▀▄█ █▀   ▀▄██ █   █ █
+  █ █▄▄▄█ █▄ ▄▄█▀█▄█▄▀  ▀ █▀▄ ▄▀█ █▄▄▄█ █
+  █▄▄▄▄▄▄▄█▄▀▄▀ █ ▀▄▀▄▀▄█▄█▄█▄▀ █▄▄▄▄▄▄▄█
+  █▄  ▄▀▀▄█ ██▀ █▀█ ▄█▀█ █▀▄▀ ▄ ▄█▀▄  ▀▄█
+  ██▀▄▄ ▄▄ ▀▀ ▄▄▀ █ █ ████▄▀▀ █  ▀ ▄█  ▀█
+  █▄█ █▄▄▄█▀█▀▄█▄█ ▄  ▀▄█ █▀ ▀▀▀  ▀   █ █
+  ███▀ █▀▄█  ▀▀▀██▀ ▄ ▄▀▀█▀ █▄▀ ▀█▀  █▄▀█
+  █▄▀▀▄█▄▄▀█   ▄▄▄▀██▄█    ▀ █ ██▀▀█▀▄ ▀█
+  █▀▀▄▀█▄▄▄█▄▄▀██▄▄▀ ▄██▄▀▀▀█▄  ▄▀▀ ▀▄ ▄█
+  █▀▄▄▄▀▀▄█▀ ▀▀██▄██▄ ▀▀ ▀▀█▀▄▄  █▀▄██ ██
+  █▀▀█▄▀█▄▀  ▄▄▀▀██▄█▀▀██  █▀▄▀ ▀█▄▄ ▀███
+  ██▀▀▀ █▄█▀▄▄██▄ ▀█ █ ██ ▄ ▄▄ ▀  ▀ █ ▄ █
+  █▀▄▄██▀▄▄ ▄ ▀ ▄▀▀ █▄▄ ▀▀▀▄███▀▄▄ ██▄▄▀█
+  ████▄▄▄▄▄▀   ▀  ▀ ▀██▀▄ ▀▀▄█▄ ▄▄▄ ▄ ▄ █
+  █ ▄▄▄▄▄ ██ █▀▀██▄▀▀▀▀▀▄▄█▄███ █▄█  █▄ █
+  █ █   █ █▀▀▀▀ █▄█  █ ▀ █▀▄▀██   ▄ █▀▄██
+  █ █▄▄▄█ █   ▄▄▀█▀█▄▀█▀█▄▄█ ▀▀█▀▄  ▄ ███
+  █▄▄▄▄▄▄▄█▄▄██▄▄▄▄█▄█▄█████▄▄███▄▄▄▄▄▄▄█
+
+
+🤖 Open this link on your Android devices (or scan the QR code) to install the app:
+https://expo.dev/accounts/colin.roy.ehri/projects/gratitude/builds/75d76bce-9fd4-4d1c-a012-da1da5c4a294
 
 ## License
 
