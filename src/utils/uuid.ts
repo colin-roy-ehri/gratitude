@@ -1,14 +1,14 @@
 /**
- * UUID generation utilities
+ * UUID generation utilities using expo-crypto
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import * as Crypto from 'expo-crypto';
 
 /**
- * Generate a UUID v4
+ * Generate a UUID v4 using expo-crypto
  */
 export function generateUUID(): string {
-  return uuidv4();
+  return Crypto.randomUUID();
 }
 
 /**
