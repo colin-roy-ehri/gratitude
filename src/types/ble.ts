@@ -3,7 +3,7 @@
  * For mesh networking and message broadcasting
  */
 
-import { MutualAidMessage } from './message';
+import { MutualAidMessage } from '../../schemas/mutual-aid-message';
 
 /**
  * BLE device information
@@ -47,6 +47,7 @@ export interface BLEMessagePacket {
  */
 export const BLE_SERVICE_UUID = '00000001-0000-1000-8000-00805f9b34fb';
 export const BLE_CHARACTERISTIC_UUID = '00000002-0000-1000-8000-00805f9b34fb';
+export const BLE_INVENTORY_CHARACTERISTIC_UUID = '00000003-0000-1000-8000-00805f9b34fb';
 
 /**
  * BLE transmission result
@@ -133,4 +134,25 @@ export interface SeenMessage {
   firstSeen: number;
   hopCount: number;
   fromDevices: string[]; // Which devices sent it
+}
+
+/**
+ * Bloom filter set for a device
+ */
+export interface DeviceBloomFilterSet {
+  deviceId: string;
+  filters: Map<number, Uint8Array>; // filterIndex -> Bloom filter (16 bytes)
+  totalFilters: number;
+  messageCount: number;
+  lastSeen: number;
+  batteryLevel: number;
+  flags: number;
+}
+
+/**
+ * Message inventory request/response
+ */
+export interface MessageInventoryPacket {
+  messageIds: string[]; // Array of 16-byte hex message IDs
+  requestedMessageIds?: string[]; // IDs we want to receive
 }

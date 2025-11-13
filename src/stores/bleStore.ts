@@ -1,6 +1,7 @@
 /**
  * BLE Store - Zustand state management for BLE operations
  * Manages BLE state, discovered devices, and message transmission
+ * Uses compact binary message format for efficient BLE communication
  */
 
 import { create } from 'zustand';
@@ -9,16 +10,21 @@ import {
   BLEDevice,
   BLEError,
   BLECentralState,
+  DeviceBloomFilterSet,
 } from '../types/ble';
-import { MutualAidMessage } from '../types/message';
+import { MutualAidMessage as CompactMessage } from '../../schemas/mutual-aid-message';
 import { bleManager } from '../services/ble/bleManager';
-import { useMessageStore } from './messageStore';
+import { uint8ArrayToHex } from '../utils/buffer';
+import { BloomFilterSet } from '../services/ble/messagePartitioner';
+import { messageInventory } from '../services/ble/messageInventory';
 
 interface BLEStore {
   // State
   isInitialized: boolean;
   centralState: BLECentralState;
+  isAdvertising: boolean;
   discoveredDevices: BLEDevice[];
+  receivedMessages: CompactMessage[];
   errors: BLEError[];
   stats: {
     devicesDiscovered: number;
@@ -27,17 +33,31 @@ interface BLEStore {
     messagesBroadcast: number;
   };
 
+  // Bloom filter state
+  localBloomFilterSet?: BloomFilterSet;
+  discoveredBloomFilters: DeviceBloomFilterSet[];
+  messageInventoryCount: number;
+
   // Actions
   initialize: () => Promise<void>;
   startScanning: () => Promise<void>;
   stopScanning: () => void;
-  broadcastMessage: (message: MutualAidMessage) => Promise<void>;
+  broadcastMessage: (message: CompactMessage) => Promise<void>;
   clearErrors: () => void;
+  clearMessages: () => void;
   destroy: () => void;
 
+  // Bloom filter actions
+  refreshBloomFilters: () => void;
+
+  // Advertising actions
+  startAdvertising: () => Promise<void>;
+  stopAdvertising: () => Promise<void>;
+
   // Internal handlers
-  handleMessageReceived: (message: MutualAidMessage, fromDevice: string) => void;
+  handleMessageReceived: (message: CompactMessage, fromDevice: string) => void;
   handleError: (error: BLEError) => void;
+  handleBloomFilterUpdate: (filterSet: BloomFilterSet) => void;
 }
 
 export const useBLEStore = create<BLEStore>()(
@@ -46,7 +66,9 @@ export const useBLEStore = create<BLEStore>()(
       // Initial state
       isInitialized: false,
       centralState: 'stopped',
+      isAdvertising: false,
       discoveredDevices: [],
+      receivedMessages: [],
       errors: [],
       stats: {
         devicesDiscovered: 0,
@@ -54,6 +76,11 @@ export const useBLEStore = create<BLEStore>()(
         messagesReceived: 0,
         messagesBroadcast: 0,
       },
+
+      // Bloom filter state
+      localBloomFilterSet: undefined,
+      discoveredBloomFilters: [],
+      messageInventoryCount: 0,
 
       // Initialize BLE manager
       initialize: async () => {
@@ -79,6 +106,10 @@ export const useBLEStore = create<BLEStore>()(
 
           bleManager.onError((error) => {
             get().handleError(error);
+          });
+
+          bleManager.onBloomFilterUpdate((filterSet) => {
+            get().handleBloomFilterUpdate(filterSet);
           });
 
           set({
@@ -149,8 +180,8 @@ export const useBLEStore = create<BLEStore>()(
         set({ centralState: 'stopped' });
       },
 
-      // Broadcast a message
-      broadcastMessage: async (message: MutualAidMessage) => {
+      // Broadcast a message using compact format
+      broadcastMessage: async (message: CompactMessage) => {
         const { isInitialized } = get();
 
         if (!isInitialized) {
@@ -176,14 +207,13 @@ export const useBLEStore = create<BLEStore>()(
       },
 
       // Handle received message
-      handleMessageReceived: (message: MutualAidMessage, fromDevice: string) => {
-        console.log('Received message from BLE:', message.message_id, 'from', fromDevice);
+      handleMessageReceived: (message: CompactMessage, fromDevice: string) => {
+        const messageId = uint8ArrayToHex(message.publicKey.slice(0, 16));
+        console.log('Received message from BLE:', messageId, 'from', fromDevice);
 
-        // Add message to message store
-        useMessageStore.getState().addMessage(message);
-
-        // Update stats
+        // Store received message
         set((state) => ({
+          receivedMessages: [...state.receivedMessages, message],
           stats: {
             ...state.stats,
             messagesReceived: state.stats.messagesReceived + 1,
@@ -205,14 +235,74 @@ export const useBLEStore = create<BLEStore>()(
         set({ errors: [] });
       },
 
+      // Clear received messages
+      clearMessages: () => {
+        set({ receivedMessages: [] });
+      },
+
+      // Refresh Bloom filters manually
+      refreshBloomFilters: () => {
+        bleManager.regenerateBloomFilters();
+        const filterSet = bleManager.getBloomFilterSet();
+        const inventoryCount = messageInventory.count();
+
+        set({
+          localBloomFilterSet: filterSet,
+          messageInventoryCount: inventoryCount,
+        });
+      },
+
+      // Handle Bloom filter update
+      handleBloomFilterUpdate: (filterSet: BloomFilterSet) => {
+        set({
+          localBloomFilterSet: filterSet,
+          messageInventoryCount: messageInventory.count(),
+          discoveredBloomFilters: bleManager.getDiscoveredBloomFilters(),
+          isAdvertising: bleManager.isCurrentlyAdvertising(),
+        });
+      },
+
+      // Start advertising Bloom filters
+      startAdvertising: async () => {
+        const { isInitialized } = get();
+
+        if (!isInitialized) {
+          await get().initialize();
+        }
+
+        const result = await bleManager.startAdvertising();
+
+        if (result.success) {
+          set({ isAdvertising: true });
+        } else {
+          get().handleError({
+            type: 'advertising_failed',
+            message: result.error || 'Failed to start advertising',
+            timestamp: Date.now(),
+          });
+        }
+      },
+
+      // Stop advertising
+      stopAdvertising: async () => {
+        await bleManager.stopAdvertising();
+        set({ isAdvertising: false });
+      },
+
       // Destroy BLE manager
       destroy: () => {
         bleManager.destroy();
+        messageInventory.clear();
         set({
           isInitialized: false,
           centralState: 'stopped',
+          isAdvertising: false,
           discoveredDevices: [],
+          receivedMessages: [],
           errors: [],
+          localBloomFilterSet: undefined,
+          discoveredBloomFilters: [],
+          messageInventoryCount: 0,
         });
       },
     }),

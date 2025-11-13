@@ -1,33 +1,31 @@
 /**
  * BLE Protocol - Message encoding/decoding for BLE transmission
- * Handles serialization and compression for efficient BLE transfer
+ * Uses compact binary schema for efficient BLE transfer
  */
 
-import { MutualAidMessage } from '../../types/message';
+import { MutualAidMessage as CompactMessage } from '../../../schemas/mutual-aid-message';
 import { BLEMessagePacket } from '../../types/ble';
 import { Result } from '../../types/common';
+import MutualAidMessageCodec from '../../../schemas/mutual-aid-message';
+import { uint8ArrayToBase64, base64ToUint8Array, uint8ArrayToHex } from '../../utils/buffer';
 
 /**
- * Encode a message for BLE transmission
- * Compresses and encodes the message into a BLE-friendly format
+ * Encode a message for BLE transmission using compact binary format
  */
-export function encodeMessageForBLE(message: MutualAidMessage): Result<string> {
+export function encodeMessageForBLE(message: CompactMessage): Result<Uint8Array> {
   try {
-    // Serialize message to JSON
-    const json = JSON.stringify(message);
-
-    // Base64 encode (in production, would also compress)
-    const encoded = Buffer.from(json, 'utf-8').toString('base64');
+    // Serialize message to compact binary format
+    const binary = MutualAidMessageCodec.serialize(message);
 
     // Check size constraints (BLE has ~512 byte limit per characteristic)
-    if (encoded.length > 512) {
+    if (binary.byteLength > 512) {
       return {
         success: false,
-        error: 'Message too large for BLE transmission (>512 bytes)',
+        error: `Message too large for BLE transmission (${binary.byteLength} > 512 bytes)`,
       };
     }
 
-    return { success: true, data: encoded };
+    return { success: true, data: binary };
   } catch (error) {
     return {
       success: false,
@@ -37,15 +35,12 @@ export function encodeMessageForBLE(message: MutualAidMessage): Result<string> {
 }
 
 /**
- * Decode a BLE message packet
+ * Decode a BLE message from compact binary format
  */
-export function decodeMessageFromBLE(encoded: string): Result<MutualAidMessage> {
+export function decodeMessageFromBLE(binary: Uint8Array): Result<CompactMessage> {
   try {
-    // Base64 decode
-    const json = Buffer.from(encoded, 'base64').toString('utf-8');
-
-    // Parse JSON
-    const message = JSON.parse(json) as MutualAidMessage;
+    // Deserialize from compact binary format
+    const message = MutualAidMessageCodec.deserialize(binary);
 
     return { success: true, data: message };
   } catch (error) {
@@ -58,20 +53,28 @@ export function decodeMessageFromBLE(encoded: string): Result<MutualAidMessage> 
 
 /**
  * Create a BLE message packet with metadata
+ * Note: The compact binary format already includes integrity checks
  */
-export function createBLEPacket(message: MutualAidMessage): Result<BLEMessagePacket> {
+export function createBLEPacket(message: CompactMessage): Result<BLEMessagePacket> {
   const encodeResult = encodeMessageForBLE(message);
 
   if (!encodeResult.success) {
     return { success: false, error: encodeResult.error };
   }
 
+  // Convert binary to base64 for compatibility with BLE string transmission
+  const base64Payload = uint8ArrayToBase64(encodeResult.data);
+
+  // Generate a simple message ID from the public key and timestamp
+  // In the compact format, we don't have a message_id field like the old format
+  const messageId = uint8ArrayToHex(message.publicKey.slice(0, 16));
+
   const packet: BLEMessagePacket = {
-    messageId: message.message_id,
-    hopCount: message.hop_count || 0,
+    messageId,
+    hopCount: 0, // Compact format doesn't have hop_count in the message itself
     timestamp: Date.now(),
-    payload: encodeResult.data,
-    checksum: generateChecksum(encodeResult.data),
+    payload: base64Payload,
+    checksum: generateChecksum(base64Payload),
   };
 
   return { success: true, data: packet };
@@ -82,7 +85,7 @@ export function createBLEPacket(message: MutualAidMessage): Result<BLEMessagePac
  */
 export function extractMessageFromPacket(
   packet: BLEMessagePacket
-): Result<MutualAidMessage> {
+): Result<CompactMessage> {
   // Verify checksum
   const expectedChecksum = generateChecksum(packet.payload);
   if (packet.checksum !== expectedChecksum) {
@@ -92,8 +95,11 @@ export function extractMessageFromPacket(
     };
   }
 
+  // Decode message from base64 to binary
+  const binary = base64ToUint8Array(packet.payload);
+
   // Decode message
-  return decodeMessageFromBLE(packet.payload);
+  return decodeMessageFromBLE(binary);
 }
 
 /**

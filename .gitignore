@@ -50,11 +50,6 @@ Thumbs.db
 # Debug
 *.map
 
-# Android - Keep android/ directory but ignore build outputs
-android/app/build/
-android/build/
-android/.gradle/
-android/app/.cxx/
-android/app/release/
-*.apk
-*.aab
+# Native folders (managed by Expo Prebuild)
+/android
+/ios

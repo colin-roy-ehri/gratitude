@@ -1,0 +1,16 @@
+{
+  "name": "apk-utils-plugin",
+  "version": "1.0.0",
+  "description": "Expo config plugin for APK sharing and verification",
+  "main": "index.js",
+  "scripts": {},
+  "keywords": [
+    "expo",
+    "config-plugin",
+    "apk",
+    "android"
+  ],
+  "peerDependencies": {
+    "@expo/config-plugins": "^8.0.0 || ^9.0.0"
+  }
+}
