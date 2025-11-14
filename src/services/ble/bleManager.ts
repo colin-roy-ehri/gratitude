@@ -104,21 +104,23 @@ class BLEManagerService {
 
       const apiLevel = Platform.Version;
 
-      // Android 12+ requires BLUETOOTH_SCAN and BLUETOOTH_CONNECT
+      // Android 12+ requires BLUETOOTH_SCAN, BLUETOOTH_CONNECT, and BLUETOOTH_ADVERTISE
       if (apiLevel >= 31) {
         const granted = await PermissionsAndroid.requestMultiple([
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
           PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE,
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         ]);
 
         if (
           granted['android.permission.BLUETOOTH_SCAN'] !== PermissionsAndroid.RESULTS.GRANTED ||
-          granted['android.permission.BLUETOOTH_CONNECT'] !== PermissionsAndroid.RESULTS.GRANTED
+          granted['android.permission.BLUETOOTH_CONNECT'] !== PermissionsAndroid.RESULTS.GRANTED ||
+          granted['android.permission.BLUETOOTH_ADVERTISE'] !== PermissionsAndroid.RESULTS.GRANTED
         ) {
           return {
             success: false,
-            error: 'Bluetooth permissions not granted',
+            error: 'Bluetooth permissions not granted. Please grant all Bluetooth permissions.',
           };
         }
       } else {

@@ -5,7 +5,7 @@
  */
 
 import BLEAdvertiser from 'react-native-ble-advertiser';
-import { NativeEventEmitter, NativeModules } from 'react-native';
+import { NativeEventEmitter, NativeModules, Platform, PermissionsAndroid } from 'react-native';
 import { BLE_SERVICE_UUID } from '../../types/ble';
 import { AdvertisementPayload, MessagePartitioner } from './messagePartitioner';
 import { Result } from '../../types/common';
@@ -25,6 +25,60 @@ export class BLEScannerService {
   private eventSubscription?: any;
 
   /**
+   * Request BLE scan permissions (Android 12+)
+   */
+  private async requestScanPermissions(): Promise<Result<void>> {
+    try {
+      if (Platform.OS !== 'android') {
+        return { success: true, data: undefined };
+      }
+
+      const apiLevel = Platform.Version;
+
+      // Android 12+ requires explicit BLUETOOTH_SCAN permission
+      if (apiLevel >= 31) {
+        const granted = await PermissionsAndroid.requestMultiple([
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
+          PermissionsAndroid.PERMISSIONS.BLUETOOTH_ADVERTISE,
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        ]);
+
+        console.log('BLE scan permissions:', granted);
+
+        if (granted['android.permission.BLUETOOTH_SCAN'] !== PermissionsAndroid.RESULTS.GRANTED) {
+          return {
+            success: false,
+            error: 'BLUETOOTH_SCAN permission not granted',
+          };
+        }
+
+        if (granted['android.permission.BLUETOOTH_ADVERTISE'] !== PermissionsAndroid.RESULTS.GRANTED) {
+          console.warn('BLUETOOTH_ADVERTISE permission not granted - advertising may not work');
+        }
+      } else {
+        // Android 11 and below
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          return {
+            success: false,
+            error: 'Location permission not granted (required for BLE scanning)',
+          };
+        }
+      }
+
+      return { success: true, data: undefined };
+    } catch (error) {
+      return {
+        success: false,
+        error: `Permission request failed: ${(error as Error).message}`,
+      };
+    }
+  }
+
+  /**
    * Start scanning for BLE advertisements
    */
   async startScanning(): Promise<Result<void>> {
@@ -33,12 +87,21 @@ export class BLEScannerService {
         return { success: true, data: undefined };
       }
 
+      // Request permissions before scanning
+      const permissionResult = await this.requestScanPermissions();
+      if (!permissionResult.success) {
+        return permissionResult;
+      }
+
+      console.log('Permissions granted, starting BLE advertisement scan...');
+
       // Set up event listener for advertisements
       this.eventSubscription = eventEmitter.addListener('onDeviceFound', (event) => {
         this.handleDeviceFound(event);
       });
 
       // Start scanning for our service UUID
+      console.log('Calling BLEAdvertiser.scanByService...');
       BLEAdvertiser.scanByService([BLE_SERVICE_UUID], {
         scanMode: BLEAdvertiser.SCAN_MODE_LOW_LATENCY, // Fast scanning for mesh
       });
@@ -48,6 +111,7 @@ export class BLEScannerService {
 
       return { success: true, data: undefined };
     } catch (error) {
+      console.error('BLE scan error:', error);
       return {
         success: false,
         error: `Failed to start scanning: ${(error as Error).message}`,

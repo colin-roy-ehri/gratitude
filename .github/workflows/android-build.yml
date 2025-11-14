@@ -31,18 +31,41 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Install dependencies
         run: npm ci
 
       - name: Set up Expo
         run: npm install -g expo-cli eas-cli
 
+      - name: Cache Expo prebuild
+        uses: actions/cache@v4
+        with:
+          path: |
+            android
+            ios
+          key: ${{ runner.os }}-expo-prebuild-${{ hashFiles('package-lock.json', 'app.json') }}
+          restore-keys: |
+            ${{ runner.os }}-expo-prebuild-
+
       - name: Generate Expo prebuild
         run: npx expo prebuild --platform android --clean
 
+      - name: Make gradlew executable
+        run: chmod +x android/gradlew
+
       - name: Build Android APK
         working-directory: android
-        run: ./gradlew assembleRelease --no-daemon
+        run: ./gradlew assembleRelease --build-cache --parallel --max-workers=4
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
