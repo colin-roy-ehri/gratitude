@@ -102,7 +102,7 @@ export class BLEScannerService {
 
       // Start scanning for our service UUID
       console.log('Calling BLEAdvertiser.scanByService...');
-      BLEAdvertiser.scanByService([BLE_SERVICE_UUID], {
+      BLEAdvertiser.scanByService(BLE_SERVICE_UUID, {
         scanMode: BLEAdvertiser.SCAN_MODE_LOW_LATENCY, // Fast scanning for mesh
       });
 

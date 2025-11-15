@@ -39,7 +39,9 @@ export function BLETestScreen() {
   useEffect(() => {
     // Initialize BLE on mount
     if (!isInitialized) {
-      initialize();
+      initialize().catch((error) => {
+        Alert.alert('Initialization Error', `Failed to initialize BLE: ${error?.message || error}`);
+      });
     }
   }, [isInitialized, initialize]);
 
