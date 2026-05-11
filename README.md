@@ -1,3 +1,13 @@
+> ## ⚠️ Divergent, non-compliant fork
+>
+> This repository is a **divergent fork** of [`google-ai-edge/gallery`](https://github.com/google-ai-edge/gallery), maintained for the [**Gemma 4 Good Hackathon**](https://www.kaggle.com/competitions/gemma-4-good-hackathon) on Kaggle.
+>
+> It is **not compliant** with the upstream project's contribution guidelines and is not intended to be merged back. It carries hackathon-specific additions — a separate Fastify backend (`backend/`), a UNSPSC search skill with bundled on-device embedding models, mutual-aid community skills (`community-need`, `community-offer`, `community-match`, `community-inbox`, `community-connect`, `community-pulse`, `community-cancel`), and Cloud Run / Vertex AI (Gemma 4 MaaS) integration.
+>
+> For the canonical upstream project, see [google-ai-edge/gallery](https://github.com/google-ai-edge/gallery). Upstream issues should be filed there, not here.
+>
+> ---
+
 # Google AI Edge Gallery ✨
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
