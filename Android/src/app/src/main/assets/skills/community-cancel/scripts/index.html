@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Cancel</title>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium@0.7.15/dist/modules/libsodium.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.15/dist/modules/libsodium-wrappers.js"></script>
+  </head>
+  <body>
+    <script>
+      const BACKEND_URL =
+        "https://gratitude-backend-121647732945.europe-west4.run.app";
+      const STORAGE_KEY = "communityShareKeys";
+      const SKILL_TAG = "community-cancel";
+
+      function loadStoredKeys() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          console.warn(`[${SKILL_TAG}] localStorage read failed:`, e);
+          return [];
+        }
+      }
+
+      function saveStoredKeys(entries) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        } catch (e) {
+          console.warn(`[${SKILL_TAG}] localStorage write failed:`, e);
+        }
+      }
+
+      // Public summary of a stored entry — never include keys.
+      function summarize(entry) {
+        return {
+          messageId: entry.messageId,
+          type: entry.type,
+          categoryName: entry.categoryName || null,
+          timestamp: entry.timestamp,
+        };
+      }
+
+      window.ai_edge_gallery_get_result = async (data) => {
+        try {
+          await sodium.ready;
+          const args = JSON.parse(data || "{}");
+
+          const stored = loadStoredKeys();
+          // Only entries that have what we need to sign a delete.
+          const cancellable = stored.filter(
+            (e) =>
+              e &&
+              typeof e.messageId === "string" &&
+              typeof e.privateKey === "string"
+          );
+
+          // Listing mode.
+          if (!args.messageId && !args.latest) {
+            return JSON.stringify({
+              posts: cancellable
+                .slice()
+                .sort((a, b) =>
+                  (b.timestamp || "").localeCompare(a.timestamp || "")
+                )
+                .map(summarize),
+            });
+          }
+
+          // Resolve target entry.
+          let target = null;
+          if (args.messageId) {
+            target = cancellable.find((e) => e.messageId === args.messageId);
+            if (!target) {
+              return JSON.stringify({
+                error:
+                  "No matching post found on this device — it may have been made from another device or before cancellation was supported.",
+              });
+            }
+          } else if (args.latest) {
+            if (cancellable.length === 0) {
+              return JSON.stringify({
+                error: "No cancellable posts on this device.",
+              });
+            }
+            target = cancellable
+              .slice()
+              .sort((a, b) =>
+                (b.timestamp || "").localeCompare(a.timestamp || "")
+              )[0];
+          }
+
+          // Sign and send.
+          const recordType = "message";
+          const recordId = target.messageId;
+          const timestamp = Date.now();
+          const canonical = `DELETE:${recordType}:${recordId}:${timestamp}`;
+          const privateKey = sodium.from_base64(
+            target.privateKey,
+            sodium.base64_variants.ORIGINAL
+          );
+          const sig = sodium.crypto_sign_detached(
+            new TextEncoder().encode(canonical),
+            privateKey
+          );
+          const signatureB64 = sodium.to_base64(
+            sig,
+            sodium.base64_variants.ORIGINAL
+          );
+
+          const res = await fetch(`${BACKEND_URL}/v1/records/delete`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              recordType,
+              recordId,
+              timestamp,
+              signature: signatureB64,
+            }),
+          });
+
+          if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            return JSON.stringify({
+              error: `Backend ${res.status}: ${text || res.statusText}`,
+            });
+          }
+
+          // Success — purge the local entry so it won't show up again.
+          const remaining = stored.filter(
+            (e) => !e || e.messageId !== target.messageId
+          );
+          saveStoredKeys(remaining);
+
+          return JSON.stringify({
+            ok: true,
+            cancelled: {
+              type: target.type,
+              categoryName: target.categoryName || null,
+            },
+          });
+        } catch (e) {
+          console.error(`[${SKILL_TAG}]`, e);
+          return JSON.stringify({
+            error: `Cancel failed: ${e && e.message ? e.message : String(e)}`,
+          });
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "gratitude-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/cors": "^10.0.1",
+    "@google-cloud/vertexai": "^1.9.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^5.0.0",
+    "firebase-admin": "^12.6.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.6",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}

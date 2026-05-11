@@ -1,0 +1,1832 @@
+[
+  {
+    "code": 10101516,
+    "expectedName": "Cattle",
+    "segment": 10,
+    "family": 1010,
+    "class": 101015,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Livestock — adult beef cow, healthy breeding stock"
+  },
+  {
+    "code": 10101607,
+    "expectedName": "Live guinea fowl",
+    "segment": 10,
+    "family": 1010,
+    "class": 101016,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Poultry — live guinea fowl, adult"
+  },
+  {
+    "code": 10101703,
+    "expectedName": "Live tilapia",
+    "segment": 10,
+    "family": 1010,
+    "class": 101017,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Fish — live tilapia, freshwater"
+  },
+  {
+    "code": 10111307,
+    "expectedName": "Pet blankets",
+    "segment": 10,
+    "family": 1011,
+    "class": 101113,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Pets — small fleece blanket for dogs or cats"
+  },
+  {
+    "code": 10121805,
+    "expectedName": "Moist food for cats",
+    "segment": 10,
+    "family": 1012,
+    "class": 101218,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Pet food — wet canned cat food, pâté or chunks in gravy"
+  },
+  {
+    "code": 10151503,
+    "expectedName": "Celery seeds or seedlings",
+    "segment": 10,
+    "family": 1015,
+    "class": 101515,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Garden starts — celery seedlings, ready to transplant"
+  },
+  {
+    "code": 10151928,
+    "expectedName": "Melia azedarach plant",
+    "segment": 10,
+    "family": 1015,
+    "class": 101519,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Trees & shrubs — chinaberry tree, medium-sized deciduous sapling"
+  },
+  {
+    "code": 10161606,
+    "expectedName": "Purple ageratum",
+    "segment": 10,
+    "family": 1016,
+    "class": 101616,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Flowers — purple ageratum blooms, fresh cut"
+  },
+  {
+    "code": 42142923,
+    "expectedName": "Hand held magnifier",
+    "segment": 42,
+    "family": 4214,
+    "class": 421429,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Vision aids — handheld magnifying glass for reading small print"
+  },
+  {
+    "code": 42144006,
+    "expectedName": "Implanted hearing device external accessories",
+    "segment": 42,
+    "family": 4214,
+    "class": 421440,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Medical — external accessory parts for an implanted hearing device"
+  },
+  {
+    "code": 42231808,
+    "expectedName": "Feeding bottles",
+    "segment": 42,
+    "family": 4223,
+    "class": 422318,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Baby feeding — plastic infant bottle, standard neck"
+  },
+  {
+    "code": 42242003,
+    "expectedName": "Prosthetic clamping devices",
+    "segment": 42,
+    "family": 4224,
+    "class": 422420,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Medical — prosthetic clamp fitting, replacement or spare part"
+  },
+  {
+    "code": 42251614,
+    "expectedName": "Sandbags or sandbag sets for rehabilitation or therapy",
+    "segment": 42,
+    "family": 4225,
+    "class": 422516,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Rehab equipment — weighted sandbags for physical therapy, set of mixed sizes"
+  },
+  {
+    "code": 42311510,
+    "expectedName": "Foam dressings",
+    "segment": 42,
+    "family": 4231,
+    "class": 423115,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Medical supplies — foam wound dressing pads, adhesive backed"
+  },
+  {
+    "code": 47121817,
+    "expectedName": "Ultraviolet disinfectant lighting unit",
+    "segment": 47,
+    "family": 4712,
+    "class": 471218,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Sanitation equipment — UV germicidal light fixture for disinfecting rooms or surfaces"
+  },
+  {
+    "code": 47131502,
+    "expectedName": "Cleaning cloths or wipes",
+    "segment": 47,
+    "family": 4713,
+    "class": 471315,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Cleaning supplies — reusable cotton cleaning cloths, pack of several"
+  },
+  {
+    "code": 47131602,
+    "expectedName": "Scouring pads",
+    "segment": 47,
+    "family": 4713,
+    "class": 471316,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Cleaning supplies — steel wool or abrasive scrubbing pad for pots and pans"
+  },
+  {
+    "code": 47131834,
+    "expectedName": "Jewelry cleaning solutions",
+    "segment": 47,
+    "family": 4713,
+    "class": 471318,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Jewelry care — liquid cleaning solution for gold and silver pieces"
+  },
+  {
+    "code": 48101532,
+    "expectedName": "Commercial use cotton candy machines or accessories",
+    "segment": 48,
+    "family": 4810,
+    "class": 481015,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Carnival equipment — commercial cotton candy machine, electric, full-size"
+  },
+  {
+    "code": 48101804,
+    "expectedName": "Commercial use measuring cups",
+    "segment": 48,
+    "family": 4810,
+    "class": 481018,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Kitchen — heavy-duty stainless steel measuring cups for commercial or restaurant use"
+  },
+  {
+    "code": 48101904,
+    "expectedName": "Food service stemware",
+    "segment": 48,
+    "family": 4810,
+    "class": 481019,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Dining & kitchen — restaurant-style glass stemware, set of wine glasses"
+  },
+  {
+    "code": 49121503,
+    "expectedName": "Tents",
+    "segment": 49,
+    "family": 4912,
+    "class": 491215,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Outdoor gear — small dome camping tent, 2-person"
+  },
+  {
+    "code": 49181509,
+    "expectedName": "Table tennis balls",
+    "segment": 49,
+    "family": 4918,
+    "class": 491815,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Sports equipment — orange table tennis balls, 3-star rated"
+  },
+  {
+    "code": 50131613,
+    "expectedName": "In shell table egg from ducks",
+    "segment": 50,
+    "family": 5013,
+    "class": 501316,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Eggs — fresh duck eggs, still in shell"
+  },
+  {
+    "code": 50131706,
+    "expectedName": "Lactose",
+    "segment": 50,
+    "family": 5013,
+    "class": 501317,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Food — pure lactose powder, dairy-derived sugar"
+  },
+  {
+    "code": 50131802,
+    "expectedName": "Processed cheese",
+    "segment": 50,
+    "family": 5013,
+    "class": 501318,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Dairy — sliced processed American cheese, individually wrapped"
+  },
+  {
+    "code": 50171559,
+    "expectedName": "\"Cinnamon or canella",
+    "segment": 50,
+    "family": 5017,
+    "class": 501715,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Spices — whole or ground cinnamon sticks, dried canella bark"
+  },
+  {
+    "code": 50171833,
+    "expectedName": "Savory spread or pate",
+    "segment": 50,
+    "family": 5017,
+    "class": 501718,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Dips & spreads — savory meat or vegetable pâté, ready to eat"
+  },
+  {
+    "code": 50181905,
+    "expectedName": "Sweet biscuits or cookies",
+    "segment": 50,
+    "family": 5018,
+    "class": 501819,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Baked goods — sweet sugar cookies, homemade batch"
+  },
+  {
+    "code": 50192110,
+    "expectedName": "Nuts or dried fruits",
+    "segment": 50,
+    "family": 5019,
+    "class": 501921,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Snacks — mixed dried fruit and nuts, unsalted"
+  },
+  {
+    "code": 50192901,
+    "expectedName": "Fresh plain pasta or noodles",
+    "segment": 50,
+    "family": 5019,
+    "class": 501929,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Pasta — fresh plain egg noodles, unflavored"
+  },
+  {
+    "code": 50193002,
+    "expectedName": "Infant beverages",
+    "segment": 50,
+    "family": 5019,
+    "class": 501930,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Baby drinks — ready-to-feed infant formula or baby juice, sealed bottles"
+  },
+  {
+    "code": 50201717,
+    "expectedName": "\"Coffee",
+    "segment": 50,
+    "family": 5020,
+    "class": 502017,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Hot drinks — ground dark roast coffee, medium bag"
+  },
+  {
+    "code": 53101503,
+    "expectedName": "Girls slacks or trousers or shorts",
+    "segment": 53,
+    "family": 5310,
+    "class": 531015,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Kids clothing — girls pants or shorts, casual fit"
+  },
+  {
+    "code": 53101601,
+    "expectedName": "Boys shirts",
+    "segment": 53,
+    "family": 5310,
+    "class": 531016,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Kids clothing — boys' button-up shirt, size 8, cotton"
+  },
+  {
+    "code": 53101703,
+    "expectedName": "Girls sweaters",
+    "segment": 53,
+    "family": 5310,
+    "class": 531017,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Kids clothing — girls' sweater, size 7–8, light pink cotton"
+  },
+  {
+    "code": 53101803,
+    "expectedName": "Girls coats or jackets",
+    "segment": 53,
+    "family": 5310,
+    "class": 531018,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Kids clothing — girls' winter coat, size 7–8, hooded"
+  },
+  {
+    "code": 53102314,
+    "expectedName": "Knit incontinence pants",
+    "segment": 53,
+    "family": 5310,
+    "class": 531023,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Incontinence wear — knit pull-on incontinence pants, adult"
+  },
+  {
+    "code": 53102604,
+    "expectedName": "Womens pajamas or nightshirts or robes",
+    "segment": 53,
+    "family": 5310,
+    "class": 531026,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Sleepwear — women's fleece robe, size large"
+  },
+  {
+    "code": 53103001,
+    "expectedName": "Mens tshirts",
+    "segment": 53,
+    "family": 5310,
+    "class": 531030,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Clothing — men's crew neck t-shirt, cotton, size large"
+  },
+  {
+    "code": 53111505,
+    "expectedName": "Infants boots",
+    "segment": 53,
+    "family": 5311,
+    "class": 531115,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Baby shoes — infant booties, soft-sole, newborn to 12 months"
+  },
+  {
+    "code": 53111604,
+    "expectedName": "Girls shoes",
+    "segment": 53,
+    "family": 5311,
+    "class": 531116,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Kids shoes — girls' sneakers, size 4, lightly worn"
+  },
+  {
+    "code": 53111905,
+    "expectedName": "Infants athletic footwear",
+    "segment": 53,
+    "family": 5311,
+    "class": 531119,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Baby shoes — infant athletic sneakers, soft sole"
+  },
+  {
+    "code": 53121601,
+    "expectedName": "Handbags or purses",
+    "segment": 53,
+    "family": 5312,
+    "class": 531216,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Accessories — small shoulder bag, zip-close, everyday carry"
+  },
+  {
+    "code": 53131630,
+    "expectedName": "Lip balm",
+    "segment": 53,
+    "family": 5313,
+    "class": 531316,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Lip care — clear moisturizing lip balm, stick form"
+  },
+  {
+    "code": 60102312,
+    "expectedName": "Vocabulary activity or resource books",
+    "segment": 60,
+    "family": 6010,
+    "class": 601023,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Books — vocabulary building workbook for adults, paperback"
+  },
+  {
+    "code": 60121502,
+    "expectedName": "Solvent based markers",
+    "segment": 60,
+    "family": 6012,
+    "class": 601215,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Art supplies — solvent-based permanent markers, fine tip"
+  },
+  {
+    "code": 60131601,
+    "expectedName": "Rhythm band sets",
+    "segment": 60,
+    "family": 6013,
+    "class": 601316,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Music — beginner rhythm band kit with assorted percussion instruments for kids"
+  },
+  {
+    "code": 60141013,
+    "expectedName": "Doll parts or accessories",
+    "segment": 60,
+    "family": 6014,
+    "class": 601410,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Toys — replacement doll accessories, small plastic parts for standard fashion doll"
+  },
+  {
+    "code": 60141112,
+    "expectedName": "Game books",
+    "segment": 60,
+    "family": 6014,
+    "class": 601411,
+    "bucket": "broad",
+    "sample": "drilldown",
+    "query": "Books — puzzle or game activity book, paperback"
+  },
+  {
+    "code": 10121500,
+    "expectedName": "Livestock feed",
+    "segment": 10,
+    "family": 1012,
+    "class": 101215,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Animal feed — bagged livestock feed, general purpose"
+  },
+  {
+    "code": 10121600,
+    "expectedName": "Bird and fowl food",
+    "segment": 10,
+    "family": 1012,
+    "class": 101216,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Bird supplies — wild bird seed mix, 10 lb bag"
+  },
+  {
+    "code": 10151700,
+    "expectedName": "Grass and forage seeds and seedlings",
+    "segment": 10,
+    "family": 1015,
+    "class": 101517,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Garden supplies — grass seed or forage crop seedlings, bulk or small bag"
+  },
+  {
+    "code": 10122100,
+    "expectedName": "Miscellaneous animal food",
+    "segment": 10,
+    "family": 1012,
+    "class": 101221,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Pets — mixed or variety animal feed, general purpose"
+  },
+  {
+    "code": 42293700,
+    "expectedName": "Surgical crushers and excavators and morselizers and related products",
+    "segment": 42,
+    "family": 4229,
+    "class": 422937,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Surgical tools — bone crusher or tissue morselizer instrument, manual or powered"
+  },
+  {
+    "code": 42201800,
+    "expectedName": "Medical diagnostic x ray products",
+    "segment": 42,
+    "family": 4220,
+    "class": 422018,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical imaging — portable X-ray cassette or film holder for diagnostic use"
+  },
+  {
+    "code": 42212000,
+    "expectedName": "Housekeeping and homemaking aids for the physically challenged",
+    "segment": 42,
+    "family": 4221,
+    "class": 422120,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Home accessibility — adaptive housekeeping tool, reacher or grip aid for limited mobility"
+  },
+  {
+    "code": 42331000,
+    "expectedName": "Labor and Delivery",
+    "segment": 42,
+    "family": 4233,
+    "class": 423310,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical — labor and delivery supplies, basic kit"
+  },
+  {
+    "code": 42121700,
+    "expectedName": "Veterinary clinical furniture",
+    "segment": 42,
+    "family": 4212,
+    "class": 421217,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Veterinary equipment — exam table for animal clinic, standard size"
+  },
+  {
+    "code": 42292000,
+    "expectedName": "Surgical mirrors and related products",
+    "segment": 42,
+    "family": 4229,
+    "class": 422920,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical — small handheld surgical mirror, stainless steel"
+  },
+  {
+    "code": 42183200,
+    "expectedName": "Allergy examining equipment and supplies",
+    "segment": 42,
+    "family": 4218,
+    "class": 421832,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical — allergy testing supplies and skin prick equipment"
+  },
+  {
+    "code": 42172000,
+    "expectedName": "Mobile medical services kits",
+    "segment": 42,
+    "family": 4217,
+    "class": 421720,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical kits — portable first aid and emergency response kit, fully stocked"
+  },
+  {
+    "code": 42151900,
+    "expectedName": "Dental hygiene and preventive care equipment and supplies",
+    "segment": 42,
+    "family": 4215,
+    "class": 421519,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Dental supplies — fluoride trays and plaque-removal tools for home or office use"
+  },
+  {
+    "code": 42142100,
+    "expectedName": "Heat and cold therapy products",
+    "segment": 42,
+    "family": 4214,
+    "class": 421421,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical supplies — reusable hot/cold gel pack, medium size"
+  },
+  {
+    "code": 42201600,
+    "expectedName": "Medical magnetic resonance imaging MRI products",
+    "segment": 42,
+    "family": 4220,
+    "class": 422016,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical imaging — MRI scanner equipment and accessories"
+  },
+  {
+    "code": 42183500,
+    "expectedName": "Ophthalmic scopes",
+    "segment": 42,
+    "family": 4218,
+    "class": 421835,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Eye care equipment — handheld ophthalmoscope or retinal scope for eye exams"
+  },
+  {
+    "code": 42192100,
+    "expectedName": "Clinical seating and stools and related products",
+    "segment": 42,
+    "family": 4219,
+    "class": 421921,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical seating — adjustable clinical stool or exam chair for healthcare setting"
+  },
+  {
+    "code": 42261800,
+    "expectedName": "Cadaver transport and storage equipment and supplies",
+    "segment": 42,
+    "family": 4226,
+    "class": 422618,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Mortuary supplies — body bag or morgue storage tray, standard size"
+  },
+  {
+    "code": 43221500,
+    "expectedName": "Call management systems or accessories",
+    "segment": 43,
+    "family": 4322,
+    "class": 432215,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Phone systems — office call management unit or handset accessories"
+  },
+  {
+    "code": 43232800,
+    "expectedName": "Network management software",
+    "segment": 43,
+    "family": 4323,
+    "class": 432328,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Networking — software for monitoring and managing network infrastructure"
+  },
+  {
+    "code": 43232000,
+    "expectedName": "Computer game or entertainment software",
+    "segment": 43,
+    "family": 4323,
+    "class": 432320,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Gaming — PC or console entertainment software, used or new"
+  },
+  {
+    "code": 43211700,
+    "expectedName": "Computer data input devices",
+    "segment": 43,
+    "family": 4321,
+    "class": 432117,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Computer peripherals — USB or wireless input device, like a mouse or keyboard"
+  },
+  {
+    "code": 43232600,
+    "expectedName": "Industry specific software",
+    "segment": 43,
+    "family": 4323,
+    "class": 432326,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Software — industry-specific application, general business use"
+  },
+  {
+    "code": 43201400,
+    "expectedName": "System Cards",
+    "segment": 43,
+    "family": 4320,
+    "class": 432014,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Computer components — system info or diagnostic cards for desktop PC"
+  },
+  {
+    "code": 45101800,
+    "expectedName": "Book binding and sewing equipment and accessories",
+    "segment": 45,
+    "family": 4510,
+    "class": 451018,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Bookbinding — manual book sewing frame, used condition"
+  },
+  {
+    "code": 45101500,
+    "expectedName": "Printing machinery and equipment",
+    "segment": 45,
+    "family": 4510,
+    "class": 451015,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Printing equipment — desktop laser printer, lightly used"
+  },
+  {
+    "code": 45121600,
+    "expectedName": "Camera parts and accessories",
+    "segment": 45,
+    "family": 4512,
+    "class": 451216,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Camera gear — spare parts and add-ons for cameras, lens filters, straps, mounts"
+  },
+  {
+    "code": 45121800,
+    "expectedName": "Microfilm production equipment and supplies",
+    "segment": 45,
+    "family": 4512,
+    "class": 451218,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Microfilm supplies — microfilm reader or duplicator machine, tabletop model"
+  },
+  {
+    "code": 46141500,
+    "expectedName": "Missile and rocket launchers",
+    "segment": 46,
+    "family": 4614,
+    "class": 461415,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Weapons — portable rocket launcher, military surplus"
+  },
+  {
+    "code": 46181800,
+    "expectedName": "Vision protection and accessories",
+    "segment": 46,
+    "family": 4618,
+    "class": 461818,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Eye protection — safety glasses or goggles, general use"
+  },
+  {
+    "code": 46101900,
+    "expectedName": "Bladed weapons and accessories",
+    "segment": 46,
+    "family": 4610,
+    "class": 461019,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Weapons — fixed-blade hunting knife, 6-inch steel blade"
+  },
+  {
+    "code": 46161500,
+    "expectedName": "Traffic control",
+    "segment": 46,
+    "family": 4616,
+    "class": 461615,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Road safety — traffic cones, barriers, or signage for directing vehicles and pedestrians"
+  },
+  {
+    "code": 46151800,
+    "expectedName": "Explosives control equipment and accessories and supplies",
+    "segment": 46,
+    "family": 4615,
+    "class": 461518,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Safety equipment — bomb disposal and explosives handling gear, protective accessories"
+  },
+  {
+    "code": 47111500,
+    "expectedName": "Washing and drying equipment",
+    "segment": 47,
+    "family": 4711,
+    "class": 471115,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Laundry appliances — full-size washing machine or clothes dryer, any condition"
+  },
+  {
+    "code": 47121600,
+    "expectedName": "Floor machines and accessories",
+    "segment": 47,
+    "family": 4712,
+    "class": 471216,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Floor care — upright buffer or floor polisher, corded"
+  },
+  {
+    "code": 47121500,
+    "expectedName": "Cleaning and janitorial carts and accessories",
+    "segment": 47,
+    "family": 4712,
+    "class": 471215,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Cleaning supplies — janitorial cart with bucket and side bags, rolling"
+  },
+  {
+    "code": 48121300,
+    "expectedName": "Gambling management and networked wagering systems",
+    "segment": 48,
+    "family": 4812,
+    "class": 481213,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Gaming systems — networked slot or betting terminal setup, used condition"
+  },
+  {
+    "code": 48102200,
+    "expectedName": "Compostable Tabletop and Serving Equipment",
+    "segment": 48,
+    "family": 4810,
+    "class": 481022,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Disposable tableware — compostable plates, bowls, and serving trays, plant-based material"
+  },
+  {
+    "code": 48131500,
+    "expectedName": "Burial or grave products",
+    "segment": 48,
+    "family": 4813,
+    "class": 481315,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Funeral supplies — burial vault or grave marker, standard size"
+  },
+  {
+    "code": 49211800,
+    "expectedName": "Physical education classroom equipment",
+    "segment": 49,
+    "family": 4921,
+    "class": 492118,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "PE equipment — gymnasium gear like balance beams, climbing ropes, or agility ladders for a school or rec program"
+  },
+  {
+    "code": 49241800,
+    "expectedName": "Sauna equipment",
+    "segment": 49,
+    "family": 4924,
+    "class": 492418,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Sauna & steam room — wood sauna heater, electric, home use"
+  },
+  {
+    "code": 49101700,
+    "expectedName": "Awards",
+    "segment": 49,
+    "family": 4910,
+    "class": 491017,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Trophies and awards — engraved plaque or trophy, adult recognition"
+  },
+  {
+    "code": 49121600,
+    "expectedName": "Camping furniture",
+    "segment": 49,
+    "family": 4912,
+    "class": 491216,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Outdoor gear — folding camp chair, lightweight aluminum"
+  },
+  {
+    "code": 50403000,
+    "expectedName": "Chinese cabbages",
+    "segment": 50,
+    "family": 5040,
+    "class": 504030,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Vegetables — fresh Chinese cabbage, napa or bok choy variety"
+  },
+  {
+    "code": 50182000,
+    "expectedName": "Cakes and pies and pastries",
+    "segment": 50,
+    "family": 5018,
+    "class": 501820,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Baked goods — assorted cakes, pies, and pastries"
+  },
+  {
+    "code": 50402800,
+    "expectedName": "Chards",
+    "segment": 50,
+    "family": 5040,
+    "class": 504028,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Leafy greens — fresh chard, rainbow or Swiss varieties"
+  },
+  {
+    "code": 50625000,
+    "expectedName": "Non GMO okra purees",
+    "segment": 50,
+    "family": 5062,
+    "class": 506250,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Canned/jarred vegetables — non-GMO okra purée, ready to use"
+  },
+  {
+    "code": 50406800,
+    "expectedName": "Yams",
+    "segment": 50,
+    "family": 5040,
+    "class": 504068,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Root vegetables — fresh yams, a few pounds"
+  },
+  {
+    "code": 50303100,
+    "expectedName": "Figs",
+    "segment": 50,
+    "family": 5030,
+    "class": 503031,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Fresh produce — fresh or dried figs, whole"
+  },
+  {
+    "code": 50191500,
+    "expectedName": "Prepared soups and stews",
+    "segment": 50,
+    "family": 5019,
+    "class": 501915,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Soups and stews — canned or jarred ready-to-eat soup, any variety"
+  },
+  {
+    "code": 50303600,
+    "expectedName": "Wine grapes",
+    "segment": 50,
+    "family": 5030,
+    "class": 503036,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Fresh produce — wine grapes, seedless or seeded, small bunch"
+  },
+  {
+    "code": 50302800,
+    "expectedName": "Currants",
+    "segment": 50,
+    "family": 5030,
+    "class": 503028,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Fresh produce — fresh or dried currants, black or red"
+  },
+  {
+    "code": 50404300,
+    "expectedName": "Kohlrabi",
+    "segment": 50,
+    "family": 5040,
+    "class": 504043,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Vegetables — fresh kohlrabi, whole heads"
+  },
+  {
+    "code": 50401800,
+    "expectedName": "Beans",
+    "segment": 50,
+    "family": 5040,
+    "class": 504018,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Groceries — dried beans, assorted varieties"
+  },
+  {
+    "code": 50121900,
+    "expectedName": "Salt preserved seafoods",
+    "segment": 50,
+    "family": 5012,
+    "class": 501219,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Preserved fish — salt-cured seafood, assorted types"
+  },
+  {
+    "code": 53131800,
+    "expectedName": "Tattoo equipment and accessories and materials",
+    "segment": 53,
+    "family": 5313,
+    "class": 531318,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Body art supplies — tattoo machine, ink, and needles for basic setup"
+  },
+  {
+    "code": 53112100,
+    "expectedName": "Overshoes",
+    "segment": 53,
+    "family": 5311,
+    "class": 531121,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Footwear — rubber overshoes, men's size 10, waterproof slip-on style"
+  },
+  {
+    "code": 53141600,
+    "expectedName": "Miscellaneous sewing supplies",
+    "segment": 53,
+    "family": 5314,
+    "class": 531416,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Sewing supplies — assorted notions and small sewing accessories, mixed lot"
+  },
+  {
+    "code": 53131500,
+    "expectedName": "Dental",
+    "segment": 53,
+    "family": 5313,
+    "class": 531315,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Dental supplies — adult toothbrush, soft bristle"
+  },
+  {
+    "code": 55122000,
+    "expectedName": "Electrical labels",
+    "segment": 55,
+    "family": 5512,
+    "class": 551220,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Electrical supplies — adhesive warning labels for wiring and circuit panels"
+  },
+  {
+    "code": 55121900,
+    "expectedName": "Signage equipment",
+    "segment": 55,
+    "family": 5512,
+    "class": 551219,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Signage — outdoor display signs, assorted styles and sizes"
+  },
+  {
+    "code": 60124500,
+    "expectedName": "Sculpture supplies and accessories",
+    "segment": 60,
+    "family": 6012,
+    "class": 601245,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Art supplies — sculpting tools and materials, general set"
+  },
+  {
+    "code": 60102700,
+    "expectedName": "Patterning or matching or spatial perception or logical thinking teacher resource materials",
+    "segment": 60,
+    "family": 6010,
+    "class": 601027,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Teaching aids — logic and pattern recognition classroom materials, elementary level"
+  },
+  {
+    "code": 60121600,
+    "expectedName": "Studio aids",
+    "segment": 60,
+    "family": 6012,
+    "class": 601216,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Art supplies — general studio aids and artist support tools"
+  },
+  {
+    "code": 60102800,
+    "expectedName": "Base ten and place value teacher resource materials",
+    "segment": 60,
+    "family": 6010,
+    "class": 601028,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Math teaching — base ten and place value classroom materials, teacher edition"
+  },
+  {
+    "code": 60105300,
+    "expectedName": "Career education instructional materials",
+    "segment": 60,
+    "family": 6010,
+    "class": 601053,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Education supplies — career and vocational learning materials, printed guides or workbooks"
+  },
+  {
+    "code": 60111400,
+    "expectedName": "Specialty decoratives for the classroom and decorative accessories",
+    "segment": 60,
+    "family": 6011,
+    "class": 601114,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Classroom decor — colorful wall decorations and display accessories for a teacher's classroom"
+  },
+  {
+    "code": 60103600,
+    "expectedName": "Multicultural activities and resources",
+    "segment": 60,
+    "family": 6010,
+    "class": 601036,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Cultural programs — multicultural events and educational materials for community groups"
+  },
+  {
+    "code": 60131700,
+    "expectedName": "Alternative sounds musical instruments",
+    "segment": 60,
+    "family": 6013,
+    "class": 601317,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Music — unusual or experimental instruments, like theremin or hang drum"
+  },
+  {
+    "code": 93151500,
+    "expectedName": "Public administration",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Government services — local public administration help or office assistance"
+  },
+  {
+    "code": 42271900,
+    "expectedName": "Airway management products",
+    "segment": 42,
+    "family": 4227,
+    "class": 422719,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical — airway management supplies, assorted"
+  },
+  {
+    "code": 42312500,
+    "expectedName": "Wound supports and supplies and accessories",
+    "segment": 42,
+    "family": 4231,
+    "class": 423125,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical supplies — wound care items like bandages, dressings, and gauze"
+  },
+  {
+    "code": 60131400,
+    "expectedName": "Percussion instruments",
+    "segment": 60,
+    "family": 6013,
+    "class": 601314,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Music — acoustic drum or hand percussion instrument, used condition welcome"
+  },
+  {
+    "code": 42203000,
+    "expectedName": "Medical linear accelerators and related products",
+    "segment": 42,
+    "family": 4220,
+    "class": 422030,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Medical equipment — linear accelerator machine for radiation therapy"
+  },
+  {
+    "code": 50111600,
+    "expectedName": "Organic minimally processed meat and poultry products",
+    "segment": 50,
+    "family": 5011,
+    "class": 501116,
+    "bucket": "broad",
+    "sample": "class",
+    "query": "Meat and poultry — organic minimally processed chicken or beef, whole or cut"
+  },
+  {
+    "code": 10500000,
+    "expectedName": "Fresh cut greenery",
+    "segment": 10,
+    "family": 1050,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Plants & flowers — assorted fresh cut branches, stems, and foliage"
+  },
+  {
+    "code": 25150000,
+    "expectedName": "Spacecraft",
+    "segment": 25,
+    "family": 2515,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Space equipment — various spacecraft and space vehicle components"
+  },
+  {
+    "code": 31190000,
+    "expectedName": "Grinding and polishing and smoothing materials",
+    "segment": 31,
+    "family": 3119,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Abrasives and finishing supplies — assorted grinding, polishing, and surface smoothing materials"
+  },
+  {
+    "code": 31120000,
+    "expectedName": "Machined castings",
+    "segment": 31,
+    "family": 3112,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Metal parts — machined cast components, various metals and alloys"
+  },
+  {
+    "code": 42210000,
+    "expectedName": "Independent living aids for the physically challenged",
+    "segment": 42,
+    "family": 4221,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Assistive devices — various mobility and daily living aids for people with physical disabilities"
+  },
+  {
+    "code": 46110000,
+    "expectedName": "Conventional war weapons",
+    "segment": 46,
+    "family": 4611,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Weapons — assorted conventional military arms and armaments"
+  },
+  {
+    "code": 49100000,
+    "expectedName": "Collectibles and awards",
+    "segment": 49,
+    "family": 4910,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Collectibles — assorted trophies, awards, and collectible items"
+  },
+  {
+    "code": 50500000,
+    "expectedName": "Nutritional supplements",
+    "segment": 50,
+    "family": 5050,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Supplements — assorted vitamins, minerals, and dietary supplements"
+  },
+  {
+    "code": 93160000,
+    "expectedName": "Taxation",
+    "segment": 93,
+    "family": 9316,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Tax help — general tax assistance and filing support"
+  },
+  {
+    "code": 48130000,
+    "expectedName": "Funeral equipment and materials",
+    "segment": 48,
+    "family": 4813,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Funeral supplies — various burial and memorial equipment and materials"
+  },
+  {
+    "code": 42320000,
+    "expectedName": "Orthopedic surgical implants",
+    "segment": 42,
+    "family": 4232,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Medical implants — orthopedic surgical implants and bone fixation devices, various types"
+  },
+  {
+    "code": 43190000,
+    "expectedName": "Communications Devices and Accessories",
+    "segment": 43,
+    "family": 4319,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Electronics — assorted communication devices and accessories"
+  },
+  {
+    "code": 10170000,
+    "expectedName": "Fertilizers and plant nutrients and herbicides",
+    "segment": 10,
+    "family": 1017,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Garden supplies — fertilizers, weed killers, and plant nutrients of various types"
+  },
+  {
+    "code": 55110000,
+    "expectedName": "Electronic reference material",
+    "segment": 55,
+    "family": 5511,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Reference materials — assorted digital references, encyclopedias, and databases"
+  },
+  {
+    "code": 10160000,
+    "expectedName": "Floriculture and silviculture products",
+    "segment": 10,
+    "family": 1016,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Garden & plants — assorted cut flowers, ornamental plants, and tree seedlings"
+  },
+  {
+    "code": 93120000,
+    "expectedName": "International relations",
+    "segment": 93,
+    "family": 9312,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Diplomacy and international affairs — general foreign relations and cross-border policy support services"
+  },
+  {
+    "code": 47140000,
+    "expectedName": "Toxic and hazardous waste cleanup products",
+    "segment": 47,
+    "family": 4714,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Hazardous waste — assorted cleanup and containment supplies for toxic spills and chemical waste"
+  },
+  {
+    "code": 10110000,
+    "expectedName": "Domestic pet products",
+    "segment": 10,
+    "family": 1011,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Pets — assorted supplies and care products for household pets"
+  },
+  {
+    "code": 50160000,
+    "expectedName": "Chocolate and sugars and sweeteners and confectionary products",
+    "segment": 50,
+    "family": 5016,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Sweets & candy — assorted chocolates, candies, sweeteners, and confections"
+  },
+  {
+    "code": 25130000,
+    "expectedName": "Aircraft",
+    "segment": 25,
+    "family": 2513,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "family",
+    "query": "Aviation — various aircraft and flying vehicles"
+  },
+  {
+    "code": 49000000,
+    "expectedName": "Sports and Recreational Equipment and Supplies and Accessories",
+    "segment": 49,
+    "family": 0,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "segment",
+    "query": "Sports & recreation — outdoor and fitness gear, sports equipment, and recreational supplies"
+  },
+  {
+    "code": 72000000,
+    "expectedName": "Building and Facility Construction and Maintenance Services",
+    "segment": 72,
+    "family": 0,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "segment",
+    "query": "Home repair — general building, maintenance, and construction help for home or property"
+  },
+  {
+    "code": 42000000,
+    "expectedName": "Medical Equipment and Accessories and Supplies",
+    "segment": 42,
+    "family": 0,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "segment",
+    "query": "Medical supplies — general medical equipment, accessories, and health care supplies"
+  },
+  {
+    "code": 10000000,
+    "expectedName": "Live Plant and Animal Material and Accessories and Supplies",
+    "segment": 10,
+    "family": 0,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "segment",
+    "query": "Live plants and animals — seeds, pet supplies, garden plants, animal feed, and related accessories"
+  },
+  {
+    "code": 46000000,
+    "expectedName": "Defense and Law Enforcement and Security and Safety Equipment and Supplies",
+    "segment": 46,
+    "family": 0,
+    "class": 0,
+    "bucket": "broad",
+    "sample": "segment",
+    "query": "Safety & security — protective gear, safety equipment, and law enforcement supplies"
+  },
+  {
+    "code": 93151503,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and social connection for someone feeling isolated"
+  },
+  {
+    "code": 93151502,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly one-on-one conversation and social companionship for someone feeling isolated"
+  },
+  {
+    "code": 93151519,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and social connection for someone feeling isolated"
+  },
+  {
+    "code": 93151507,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and social connection, one-on-one"
+  },
+  {
+    "code": 93151509,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and listening ear, one-on-one"
+  },
+  {
+    "code": 93151513,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and companionship for someone going through a hard time"
+  },
+  {
+    "code": 93151518,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and social connection for someone feeling lonely or overwhelmed"
+  },
+  {
+    "code": 93151515,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and companionship for someone going through a hard time"
+  },
+  {
+    "code": 93151508,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and listening ear, one-on-one"
+  },
+  {
+    "code": 93151506,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly listening and social connection for someone going through a hard time"
+  },
+  {
+    "code": 93151510,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and listening ear, one-on-one"
+  },
+  {
+    "code": 93151501,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and companionship for someone going through a hard time"
+  },
+  {
+    "code": 93151504,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and listening ear, one-on-one"
+  },
+  {
+    "code": 93151511,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and listening ear, one-on-one"
+  },
+  {
+    "code": 93151516,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly one-on-one conversation and companionship for someone feeling isolated"
+  },
+  {
+    "code": 93151512,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly listening and conversation, one-on-one"
+  },
+  {
+    "code": 93151602,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — assistance with personal care tasks and everyday routines at home"
+  },
+  {
+    "code": 93151605,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — hands-on personal care assistance for everyday tasks at home"
+  },
+  {
+    "code": 93151603,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — assistance with personal care tasks and everyday routines for an adult at home"
+  },
+  {
+    "code": 93151611,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — hands-on personal care and everyday task assistance for someone needing extra support"
+  },
+  {
+    "code": 93151607,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — hands-on personal care and everyday task assistance for someone needing extra support"
+  },
+  {
+    "code": 93151609,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — assistance with personal care tasks and everyday routines for an adult at home"
+  },
+  {
+    "code": 93151604,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — help with personal care routines, grooming, or everyday tasks at home"
+  },
+  {
+    "code": 93151601,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — hands-on personal care and routine daily task assistance for someone needing extra support"
+  },
+  {
+    "code": 93151610,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — hands-on personal care assistance for everyday tasks at home"
+  },
+  {
+    "code": 93151606,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — hands-on personal care and everyday task assistance for someone with limited mobility"
+  },
+  {
+    "code": 93151608,
+    "expectedName": "Peer Care & Daily Living Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931516,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Daily living help — hands-on personal care and everyday task assistance for someone needing extra support at home"
+  },
+  {
+    "code": 93151702,
+    "expectedName": "Childcare & Youth Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931517,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Childcare — after-school supervision for elementary-age kids, in-home"
+  },
+  {
+    "code": 93151701,
+    "expectedName": "Childcare & Youth Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931517,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Childcare — after-school supervision for elementary-age kids"
+  },
+  {
+    "code": 93151514,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly one-on-one companionship and listening for someone going through a hard time"
+  },
+  {
+    "code": 93151505,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and social connection for someone going through a hard time"
+  },
+  {
+    "code": 93151517,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and someone to talk to, one-on-one"
+  },
+  {
+    "code": 93151520,
+    "expectedName": "Peer Emotional & Social Support — specific service",
+    "segment": 93,
+    "family": 9315,
+    "class": 931515,
+    "bucket": "community",
+    "sample": "commodity",
+    "query": "Emotional support — friendly conversation and social connection for someone going through a tough time"
+  }
+]

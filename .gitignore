@@ -1,1 +1,11 @@
 .DS_Store
+node_modules
+.idea/
+.vscode/
+.claude/
+
+# Secrets
+backend/.env
+
+# Large bundled model weights (>100MB GitHub limit). Re-fetch via tools/unspsc-indexer.
+**/model_q4.onnx_data

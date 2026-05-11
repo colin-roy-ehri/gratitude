@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNSPSC Search</title>
+  </head>
+  <body>
+    <script type="module">
+      import { AutoModel, AutoTokenizer, env } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.0";
+
+      const SKILL_BASE = "/assets/skills/unspsc-search/assets";
+      // VEC_DIM is the PCA-projected dimension. Must match PROJECTED_DIM in
+      // tools/unspsc-indexer/scripts/build-unspsc-index.ts. Larger dim retains
+      // more variance from the embedding model at the cost of a bigger
+      // unspsc.bin and a few extra dot-product cycles per scored record.
+      const VEC_DIM = 64;
+      const RECORD_SIZE = 4 + 1 + 2 + VEC_DIM * 3 + 4 * 3;
+      const MODEL_NAME = "onnx-community/embeddinggemma-300m-ONNX";
+      // EmbeddingGemma is trained with task-specific prefixes; the indexer
+      // uses the document prefix when embedding canonical/synonym/context,
+      // so queries must use the matching retrieval prefix to land in the
+      // same vector space.
+      const QUERY_PREFIX = "task: search result | query: ";
+
+      env.allowRemoteModels = false;
+      env.allowLocalModels = true;
+      env.localModelPath = `${SKILL_BASE}/models/`;
+      env.backends.onnx.wasm.wasmPaths =
+        "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/";
+
+      const CURATED_CLASSES = {
+        931515: "Peer Emotional & Social Support",
+        931516: "Peer Care & Daily Living Support",
+        931517: "Childcare & Youth Support",
+        931518: "Transportation & Accompaniment",
+        931519: "Legal & Bureaucratic Navigation",
+        931520: "Health Navigation & Support",
+        931521: "Home & Repair Support",
+        931522: "Food & Meal Support",
+        931523: "Skills & Knowledge Sharing",
+        931524: "Safety & Protection",
+        931525: "Harm Reduction Services",
+        931526: "Street Medicine & Outreach",
+        931527: "Criminalized Communities Support",
+        931528: "Reproductive Justice",
+        931529: "Disability Justice",
+        931530: "Community Gathering & Social Spaces",
+        931531: "Connection & Anti-Isolation",
+      };
+
+      let state = null;
+
+      async function loadOnce() {
+        if (state) return state;
+
+        const [indexBuf, pcaResp, taxResp] = await Promise.all([
+          fetch(`${SKILL_BASE}/unspsc.bin`).then((r) => r.arrayBuffer()),
+          fetch(`${SKILL_BASE}/unspsc-pca.json`).then((r) => r.json()),
+          fetch(`${SKILL_BASE}/unspsc-taxonomy.json`)
+            .then((r) => (r.ok ? r.json() : []))
+            .catch(() => []),
+        ]);
+
+        const indexView = new DataView(indexBuf);
+        const magic = indexView.getUint32(0, true);
+        if (magic !== 0x554e5343) {
+          throw new Error(
+            `Invalid binary index magic: 0x${magic.toString(16)}`
+          );
+        }
+        const numSegments = indexView.getUint8(5);
+        const segmentDir = new Map();
+        let dirOffset = 8;
+        for (let i = 0; i < numSegments; i++) {
+          const segmentId = indexView.getUint8(dirOffset);
+          dirOffset += 1;
+          const c0 = indexView.getUint8(dirOffset);
+          const c1 = indexView.getUint8(dirOffset + 1);
+          const c2 = indexView.getUint8(dirOffset + 2);
+          const count = c0 | (c1 << 8) | (c2 << 16);
+          dirOffset += 3;
+          const offset = indexView.getUint32(dirOffset, true);
+          dirOffset += 4;
+          segmentDir.set(segmentId, { count, offset });
+        }
+
+        const taxonomy = new Map();
+        if (Array.isArray(taxResp)) {
+          for (const entry of taxResp) {
+            taxonomy.set(entry.code, entry);
+          }
+        }
+
+        const tokenizer = await AutoTokenizer.from_pretrained(MODEL_NAME);
+        const model = await AutoModel.from_pretrained(MODEL_NAME, {
+          dtype: "q4", // EmbeddingGemma supports q4 | q8 | fp32 only
+        });
+
+        state = {
+          indexBuf,
+          indexView,
+          segmentDir,
+          pca: pcaResp,
+          taxonomy,
+          tokenizer,
+          model,
+        };
+        return state;
+      }
+
+      function projectQuery(queryVec, pca) {
+        const { matrix, mean } = pca;
+        const centered = new Float32Array(queryVec.length);
+        for (let i = 0; i < queryVec.length; i++) {
+          centered[i] = queryVec[i] - mean[i];
+        }
+        const projected = new Float32Array(matrix.length);
+        for (let i = 0; i < matrix.length; i++) {
+          let sum = 0;
+          const row = matrix[i];
+          for (let j = 0; j < row.length; j++) {
+            sum += centered[j] * row[j];
+          }
+          projected[i] = sum;
+        }
+        return projected;
+      }
+
+      function readRecord(buf, view, byteOffset) {
+        let o = byteOffset;
+        const code = view.getUint32(o, true);
+        o += 4;
+        const segment = view.getUint8(o);
+        o += 1;
+        o += 2; // skip family
+        const canonical = new Int8Array(buf, o, VEC_DIM);
+        o += VEC_DIM;
+        const synonym = new Int8Array(buf, o, VEC_DIM);
+        o += VEC_DIM;
+        const context = new Int8Array(buf, o, VEC_DIM);
+        o += VEC_DIM;
+        const scaleC = view.getFloat32(o, true);
+        o += 4;
+        const scaleS = view.getFloat32(o, true);
+        o += 4;
+        const scaleX = view.getFloat32(o, true);
+        return { code, segment, canonical, synonym, context, scaleC, scaleS, scaleX };
+      }
+
+      function dequantizeAndScore(query, q, scale) {
+        let dot = 0;
+        let normA = 0;
+        let normB = 0;
+        for (let i = 0; i < query.length; i++) {
+          const b = q[i] / scale;
+          dot += query[i] * b;
+          normA += query[i] * query[i];
+          normB += b * b;
+        }
+        if (normA === 0 || normB === 0) return 0;
+        return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+      }
+
+      function describeCode(code, taxonomy) {
+        const classNum = Math.floor(code / 100);
+        const curated = CURATED_CLASSES[classNum];
+        const tax = taxonomy.get(code);
+        if (tax && tax.name) {
+          return curated ? `${tax.name} — ${curated}` : tax.name;
+        }
+        if (curated) return `${curated} (${code})`;
+        return `Code ${code}`;
+      }
+
+      async function search(query, segmentHint, topK) {
+        const s = await loadOnce();
+        const prefixed = QUERY_PREFIX + query;
+        const inputs = await s.tokenizer([prefixed], { padding: true });
+        const { sentence_embedding } = await s.model(inputs);
+        // sentence_embedding is shape [1, 768] already L2-normalized.
+        const queryVec = new Float32Array(sentence_embedding.data);
+        const projected = projectQuery(queryVec, s.pca);
+
+        const segmentsToScan = segmentHint
+          ? [segmentHint]
+          : Array.from(s.segmentDir.keys());
+
+        const candidates = [];
+        for (const segId of segmentsToScan) {
+          const segInfo = s.segmentDir.get(segId);
+          if (!segInfo) continue;
+          for (let i = 0; i < segInfo.count; i++) {
+            const rec = readRecord(
+              s.indexBuf,
+              s.indexView,
+              segInfo.offset + i * RECORD_SIZE
+            );
+            const sc1 = dequantizeAndScore(projected, rec.canonical, rec.scaleC);
+            const sc2 = dequantizeAndScore(projected, rec.synonym, rec.scaleS);
+            const sc3 = dequantizeAndScore(projected, rec.context, rec.scaleX);
+            const score = 0.5 * sc1 + 0.3 * sc2 + 0.2 * sc3;
+            if (score > 0) {
+              candidates.push({ code: rec.code, score });
+            }
+          }
+        }
+        candidates.sort((a, b) => b.score - a.score);
+        return candidates.slice(0, topK).map((c) => ({
+          unspscCode: c.code,
+          name: describeCode(c.code, s.taxonomy),
+          score: Number(c.score.toFixed(4)),
+        }));
+      }
+
+      window.ai_edge_gallery_get_result = async (data) => {
+        try {
+          const params = JSON.parse(data);
+          const query = params.query;
+          if (!query || typeof query !== "string") {
+            return JSON.stringify({ error: "query (string) is required" });
+          }
+          const segment =
+            typeof params.segment === "number" ? params.segment : undefined;
+          const limit =
+            typeof params.limit === "number" && params.limit > 0
+              ? Math.min(params.limit, 25)
+              : 5;
+          const results = await search(query, segment, limit);
+          return JSON.stringify({ results });
+        } catch (e) {
+          console.error("[unspsc-search]", e);
+          return JSON.stringify({
+            error: `UNSPSC search failed: ${e && e.message ? e.message : String(e)}`,
+          });
+        }
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_AR_IMAGE}:${SHORT_SHA}
+      - -t
+      - ${_AR_IMAGE}:latest
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "${_AR_IMAGE}:${SHORT_SHA}"]
+
+  - name: gcr.io/cloud-builders/docker
+    args: ["push", "${_AR_IMAGE}:latest"]
+
+images:
+  - ${_AR_IMAGE}:${SHORT_SHA}
+  - ${_AR_IMAGE}:latest
+
+substitutions:
+  _AR_IMAGE: europe-west4-docker.pkg.dev/REPLACE_PROJECT/gratitude/gratitude-backend

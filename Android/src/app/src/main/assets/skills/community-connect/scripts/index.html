@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Connect</title>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium@0.7.15/dist/modules/libsodium.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.15/dist/modules/libsodium-wrappers.js"></script>
+  </head>
+  <body>
+    <script>
+      const BACKEND_URL =
+        "https://gratitude-backend-121647732945.europe-west4.run.app";
+      const STORAGE_KEY = "communityShareKeys";
+      const SHARED_KEY = "communityContactShared";
+      const SKILL_TAG = "community-connect";
+
+      function loadStoredKeys() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function recordShared(yourMessageId, theirPublicKey) {
+        try {
+          const raw = localStorage.getItem(SHARED_KEY);
+          const map = raw ? JSON.parse(raw) : {};
+          const list = Array.isArray(map[yourMessageId])
+            ? map[yourMessageId]
+            : [];
+          if (!list.includes(theirPublicKey)) list.push(theirPublicKey);
+          map[yourMessageId] = list;
+          localStorage.setItem(SHARED_KEY, JSON.stringify(map));
+        } catch (e) {
+          console.warn(`[${SKILL_TAG}] sharedMap write failed:`, e);
+        }
+      }
+
+      window.ai_edge_gallery_get_result = async (data) => {
+        try {
+          await sodium.ready;
+          const args = JSON.parse(data || "{}");
+          const recipientPublicKey = args.recipientPublicKey;
+          const yourMessageId = args.yourMessageId;
+          const contactText = args.contactText;
+
+          if (!recipientPublicKey || typeof recipientPublicKey !== "string") {
+            return JSON.stringify({ error: "recipientPublicKey is required" });
+          }
+          if (!yourMessageId || typeof yourMessageId !== "string") {
+            return JSON.stringify({ error: "yourMessageId is required" });
+          }
+          if (!contactText || typeof contactText !== "string") {
+            return JSON.stringify({ error: "contactText is required" });
+          }
+
+          const stored = loadStoredKeys();
+          const myEntry = stored.find((e) => e && e.messageId === yourMessageId);
+          if (!myEntry || !myEntry.privateKey || !myEntry.publicKey) {
+            return JSON.stringify({
+              error:
+                "Couldn't find the signing key for your matched post on this device.",
+            });
+          }
+
+          // Sealed-box: convert recipient Ed25519 pub -> X25519, encrypt.
+          const recipientEdPub = sodium.from_base64(
+            recipientPublicKey,
+            sodium.base64_variants.ORIGINAL
+          );
+          const recipientXPub =
+            sodium.crypto_sign_ed25519_pk_to_curve25519(recipientEdPub);
+          const ctBytes = sodium.crypto_box_seal(
+            new TextEncoder().encode(contactText),
+            recipientXPub
+          );
+          const encryptedPayload = sodium.to_base64(
+            ctBytes,
+            sodium.base64_variants.ORIGINAL
+          );
+
+          // Sign the ciphertext with the sender's Ed25519 private key.
+          const senderEdPriv = sodium.from_base64(
+            myEntry.privateKey,
+            sodium.base64_variants.ORIGINAL
+          );
+          const sig = sodium.crypto_sign_detached(ctBytes, senderEdPriv);
+          const signature = sodium.to_base64(
+            sig,
+            sodium.base64_variants.ORIGINAL
+          );
+
+          const res = await fetch(`${BACKEND_URL}/v1/contact/share`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              senderPublicKey: myEntry.publicKey,
+              recipientPublicKey,
+              encryptedPayload,
+              signature,
+            }),
+          });
+
+          if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            return JSON.stringify({
+              error: `Backend ${res.status}: ${text || res.statusText}`,
+            });
+          }
+
+          const json = await res.json();
+          recordShared(yourMessageId, recipientPublicKey);
+
+          return JSON.stringify({
+            ok: true,
+            contactRecordId: json.contactRecordId || null,
+          });
+        } catch (e) {
+          console.error(`[${SKILL_TAG}]`, e);
+          return JSON.stringify({
+            error: `Share failed: ${e && e.message ? e.message : String(e)}`,
+          });
+        }
+      };
+    </script>
+  </body>
+</html>

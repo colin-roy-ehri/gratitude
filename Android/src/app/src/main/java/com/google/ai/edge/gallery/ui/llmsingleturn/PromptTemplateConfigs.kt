@@ -54,10 +54,66 @@ enum class LanguageType(val label: String) {
   TYPESCRIPT(label = "TypeScript"),
 }
 
+enum class MutualAidCategoryType(val label: String) {
+  FOOD(label = "Food"),
+  MEDICAL_SUPPLIES(label = "Medical supplies"),
+  CLOTHING(label = "Clothing"),
+  TRANSPORTATION(label = "Transportation / rides"),
+  HOUSING(label = "Housing / shelter"),
+  CHILDCARE(label = "Childcare"),
+  EMOTIONAL_SUPPORT(label = "Emotional support"),
+  SKILLS_HELP(label = "Skills / help"),
+  OTHER(label = "Other"),
+}
+
+enum class MutualAidUrgencyType(val label: String) {
+  TODAY(label = "Today"),
+  THIS_WEEK(label = "This week"),
+  THIS_MONTH(label = "This month"),
+  ONGOING(label = "Ongoing"),
+}
+
+enum class MutualAidDietType(val label: String) {
+  NONE(label = "No restriction"),
+  VEGAN(label = "Vegan"),
+  VEGETARIAN(label = "Vegetarian"),
+  GLUTEN_FREE(label = "Gluten-free"),
+  DAIRY_FREE(label = "Dairy-free"),
+  HALAL(label = "Halal"),
+  KOSHER(label = "Kosher"),
+  NUT_FREE(label = "Nut-free"),
+}
+
+enum class MutualAidRecurrenceType(val label: String) {
+  ONE_TIME(label = "One time"),
+  THIS_WEEK(label = "This week"),
+  RECURRING(label = "Recurring"),
+  ONGOING(label = "Ongoing"),
+}
+
+enum class MutualAidQuantityType(val label: String) {
+  SMALL(label = "Small amount"),
+  MEDIUM(label = "Medium amount"),
+  LARGE(label = "Large amount"),
+  BULK(label = "Bulk"),
+  ONGOING_SUPPLY(label = "Ongoing supply"),
+}
+
+enum class MutualAidHelperCountType(val label: String) {
+  SINGLE(label = "Single helper"),
+  MULTIPLE(label = "Multiple helpers"),
+}
+
 enum class InputEditorLabel(val label: String) {
   TONE(label = "Tone"),
   STYLE(label = "Style"),
   LANGUAGE(label = "Language"),
+  CATEGORY(label = "Category"),
+  URGENCY(label = "Urgency"),
+  DIET(label = "Dietary"),
+  RECURRENCE(label = "Recurrence"),
+  QUANTITY(label = "Quantity"),
+  HELPERS(label = "Helpers"),
 }
 
 open class PromptTemplateInputEditor(
@@ -196,6 +252,149 @@ enum class PromptTemplateType(
         "Declare an immutable variable named 'appName' with the value \"AI Gallery\"",
         "Print the numbers from 1 to 5 using a for loop.",
         "Write a function that returns the square of an integer input.",
+      ),
+  ),
+  MUTUAL_AID_NEED(
+    label = "Mutual aid: NEED",
+    config =
+      PromptTemplateConfig(
+        inputEditors =
+          listOf(
+            PromptTemplateSingleSelectInputEditor(
+              label = InputEditorLabel.CATEGORY.label,
+              options = MutualAidCategoryType.entries.map { it.label },
+              defaultOption = MutualAidCategoryType.FOOD.label,
+            ),
+            PromptTemplateSingleSelectInputEditor(
+              label = InputEditorLabel.URGENCY.label,
+              options = MutualAidUrgencyType.entries.map { it.label },
+              defaultOption = MutualAidUrgencyType.THIS_WEEK.label,
+            ),
+            PromptTemplateSingleSelectInputEditor(
+              label = InputEditorLabel.DIET.label,
+              options = MutualAidDietType.entries.map { it.label },
+              defaultOption = MutualAidDietType.NONE.label,
+            ),
+          )
+      ),
+    genFullPrompt = { userInput, inputEditorValues ->
+      val category = inputEditorValues[InputEditorLabel.CATEGORY.label] as String
+      val urgency = inputEditorValues[InputEditorLabel.URGENCY.label] as String
+      val diet = inputEditorValues[InputEditorLabel.DIET.label] as String
+      buildAnnotatedString {
+        withStyle(GEMINI_GRADIENT_STYLE) {
+          append(
+            "Help me draft a clear, dignified mutual-aid NEED post. " +
+              "Category: ${category.lowercase()}. Urgency: ${urgency.lowercase()}. " +
+              "Dietary: ${diet.lowercase()}. " +
+              "Output two sections: (1) a one-paragraph community-board description (no names, " +
+              "no street addresses), and (2) a comma-separated list of 3-5 short keywords " +
+              "suitable for searching the UNSPSC catalog. Source description: "
+          )
+        }
+        append(userInput)
+      }
+    },
+    examplePrompts =
+      listOf(
+        "Groceries for a family of 3-4 this week, vegetarian household.",
+        "Looking for a ride to a medical appointment on the north side of town.",
+        "Could use someone to watch our kid for 2 hours after school once or twice.",
+        "Need a winter coat, men's medium, before the cold snap.",
+        "Want help filling out unemployment paperwork — English not my first language.",
+      ),
+  ),
+  MUTUAL_AID_OFFER(
+    label = "Mutual aid: OFFER",
+    config =
+      PromptTemplateConfig(
+        inputEditors =
+          listOf(
+            PromptTemplateSingleSelectInputEditor(
+              label = InputEditorLabel.CATEGORY.label,
+              options = MutualAidCategoryType.entries.map { it.label },
+              defaultOption = MutualAidCategoryType.FOOD.label,
+            ),
+            PromptTemplateSingleSelectInputEditor(
+              label = InputEditorLabel.RECURRENCE.label,
+              options = MutualAidRecurrenceType.entries.map { it.label },
+              defaultOption = MutualAidRecurrenceType.ONE_TIME.label,
+            ),
+            PromptTemplateSingleSelectInputEditor(
+              label = InputEditorLabel.QUANTITY.label,
+              options = MutualAidQuantityType.entries.map { it.label },
+              defaultOption = MutualAidQuantityType.MEDIUM.label,
+            ),
+          )
+      ),
+    genFullPrompt = { userInput, inputEditorValues ->
+      val category = inputEditorValues[InputEditorLabel.CATEGORY.label] as String
+      val recurrence = inputEditorValues[InputEditorLabel.RECURRENCE.label] as String
+      val quantity = inputEditorValues[InputEditorLabel.QUANTITY.label] as String
+      buildAnnotatedString {
+        withStyle(GEMINI_GRADIENT_STYLE) {
+          append(
+            "Help me draft a warm, mutual mutual-aid OFFER post — peer-to-peer, " +
+              "not charity. Category: ${category.lowercase()}. " +
+              "Recurrence: ${recurrence.lowercase()}. Quantity: ${quantity.lowercase()}. " +
+              "Output two sections: (1) a one-paragraph community-board description " +
+              "(no contact details, no exact address), and (2) a comma-separated list of " +
+              "3-5 short keywords suitable for searching the UNSPSC catalog. " +
+              "Source description: "
+          )
+        }
+        append(userInput)
+      }
+    },
+    examplePrompts =
+      listOf(
+        "Tomatoes and zucchini from my garden, more than I can eat.",
+        "Can give rides to medical appointments on weekday mornings, English/Spanish.",
+        "Have an indoor space with refrigeration, weekdays 9-5, can host small meetups.",
+        "Happy to help with basic plumbing fixes — leaky faucets, running toilets.",
+        "Can babysit during weekday afternoons in exchange for help with errands.",
+      ),
+  ),
+  MUTUAL_AID_COMPLETION(
+    label = "Mutual aid: completion",
+    config =
+      PromptTemplateConfig(
+        inputEditors =
+          listOf(
+            PromptTemplateSingleSelectInputEditor(
+              label = InputEditorLabel.CATEGORY.label,
+              options = MutualAidCategoryType.entries.map { it.label },
+              defaultOption = MutualAidCategoryType.FOOD.label,
+            ),
+            PromptTemplateSingleSelectInputEditor(
+              label = InputEditorLabel.HELPERS.label,
+              options = MutualAidHelperCountType.entries.map { it.label },
+              defaultOption = MutualAidHelperCountType.SINGLE.label,
+            ),
+          )
+      ),
+    genFullPrompt = { userInput, inputEditorValues ->
+      val category = inputEditorValues[InputEditorLabel.CATEGORY.label] as String
+      val helpers = inputEditorValues[InputEditorLabel.HELPERS.label] as String
+      buildAnnotatedString {
+        withStyle(GEMINI_GRADIENT_STYLE) {
+          append(
+            "Write a short, anonymous \"good news\" broadcast announcing a completed " +
+              "mutual-aid exchange. Category: ${category.lowercase()}. Helpers: " +
+              "${helpers.lowercase()}. Constraints: under 30 words, warm but not sentimental, " +
+              "absolutely no identifying details (no names, no street addresses, no specific " +
+              "times). Source note: "
+          )
+        }
+        append(userInput)
+      }
+    },
+    examplePrompts =
+      listOf(
+        "Got groceries delivered today, thanks to a community member.",
+        "Ride to the clinic worked out — appreciate it.",
+        "Borrowed the drill, fixed the shelf, returned it. Thanks neighbor.",
+        "The meal train this week was a huge help while I was sick.",
       ),
   ),
 }

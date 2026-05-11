@@ -218,15 +218,14 @@ class AgentTools() : ToolSet {
     }
   }
 
-  @Tool(
-    description =
-      "Run an Android intent. It is used to interact with the app to perform certain actions."
-  )
+  // run_intent intentionally NOT exposed as @Tool to the on-device model.
+  // Gemma was routing skill calls through run_intent (always returning "failed")
+  // instead of using load_skill + run_js, even with explicit "MUST NOT use
+  // run_intent" instructions in the system prompt. Removing the @Tool
+  // annotation eliminates the choice and forces the run_js path.
+  @Suppress("unused")
   fun runIntent(
-    @ToolParam(description = "The intent to run.") intent: String,
-    @ToolParam(
-      description = "A JSON string containing the parameter values required for the intent."
-    )
+    intent: String,
     parameters: String,
   ): Map<String, String> {
     return runBlocking(Dispatchers.Default) {

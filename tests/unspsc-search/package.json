@@ -1,0 +1,17 @@
+{
+  "name": "unspsc-search-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Regression harness for the unspsc-search skill.",
+  "scripts": {
+    "smoke": "node runHarness.mjs --query \"Office supplies — refillable rollerball pen with blue ink\"",
+    "fixtures": "node generateFixtures.mjs",
+    "eval": "node runEval.mjs",
+    "compact": "node compactionPlan.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@huggingface/transformers": "^3.5.0"
+  }
+}

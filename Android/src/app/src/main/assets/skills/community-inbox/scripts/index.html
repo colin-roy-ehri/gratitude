@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Inbox</title>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium@0.7.15/dist/modules/libsodium.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.15/dist/modules/libsodium-wrappers.js"></script>
+  </head>
+  <body>
+    <script>
+      const BACKEND_URL =
+        "https://gratitude-backend-121647732945.europe-west4.run.app";
+      const STORAGE_KEY = "communityShareKeys";
+      const SHARED_KEY = "communityContactShared"; // map: yourMessageId -> [theirPublicKey, ...]
+      const SKILL_TAG = "community-inbox";
+      const MAX_KEYS_TO_QUERY = 25;
+
+      function loadStoredKeys() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          return parsed
+            .filter(
+              (e) =>
+                e &&
+                typeof e.publicKey === "string" &&
+                e.publicKey.length >= 8 &&
+                typeof e.privateKey === "string"
+            )
+            .slice(-MAX_KEYS_TO_QUERY);
+        } catch (e) {
+          console.warn(`[${SKILL_TAG}] localStorage read failed:`, e);
+          return [];
+        }
+      }
+
+      function loadSharedMap() {
+        try {
+          const raw = localStorage.getItem(SHARED_KEY);
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function isAlreadyShared(sharedMap, yourMessageId, theirPublicKey) {
+        const list = sharedMap[yourMessageId];
+        return Array.isArray(list) && list.includes(theirPublicKey);
+      }
+
+      async function markRead(inboxId) {
+        try {
+          await fetch(
+            `${BACKEND_URL}/v1/inbox/messages/${encodeURIComponent(
+              inboxId
+            )}/read`,
+            { method: "PATCH" }
+          );
+        } catch (e) {
+          console.warn(`[${SKILL_TAG}] markRead failed:`, e);
+        }
+      }
+
+      function decryptSealedBox(encryptedB64, edPubB64, edPrivB64) {
+        try {
+          const ct = sodium.from_base64(
+            encryptedB64,
+            sodium.base64_variants.ORIGINAL
+          );
+          const edPub = sodium.from_base64(
+            edPubB64,
+            sodium.base64_variants.ORIGINAL
+          );
+          const edPriv = sodium.from_base64(
+            edPrivB64,
+            sodium.base64_variants.ORIGINAL
+          );
+          const xPub = sodium.crypto_sign_ed25519_pk_to_curve25519(edPub);
+          const xPriv = sodium.crypto_sign_ed25519_sk_to_curve25519(edPriv);
+          const plain = sodium.crypto_box_seal_open(ct, xPub, xPriv);
+          return new TextDecoder().decode(plain);
+        } catch (e) {
+          console.warn(`[${SKILL_TAG}] decrypt failed:`, e);
+          return null;
+        }
+      }
+
+      window.ai_edge_gallery_get_result = async (data) => {
+        try {
+          await sodium.ready;
+          const stored = loadStoredKeys();
+          if (stored.length === 0) {
+            return JSON.stringify({ matches: [], contactInfo: [], text: [] });
+          }
+
+          const keyByPub = new Map(stored.map((e) => [e.publicKey, e]));
+          const sharedMap = loadSharedMap();
+          const matches = [];
+          const contactInfo = [];
+          const text = [];
+
+          for (const entry of stored) {
+            const url = `${BACKEND_URL}/v1/messages/poll?publicKey=${encodeURIComponent(
+              entry.publicKey
+            )}`;
+            let res;
+            try {
+              res = await fetch(url);
+            } catch (e) {
+              console.warn(`[${SKILL_TAG}] poll fetch failed:`, e);
+              continue;
+            }
+            if (!res.ok) continue;
+            const json = await res.json();
+            const msgs = Array.isArray(json.messages) ? json.messages : [];
+
+            for (const m of msgs) {
+              if (m.read) continue;
+
+              if (m.messageType === "match") {
+                const d = m.data || {};
+                const yourMessageId = d.yourMessageId || null;
+                const theirPublicKey = d.theirPublicKey || null;
+                const ownerEntry = stored.find(
+                  (e) => e.messageId === yourMessageId
+                );
+                matches.push({
+                  inboxId: m.id,
+                  yourMessageId,
+                  theirMessageId: d.theirMessageId || null,
+                  theirPublicKey,
+                  reason: d.match?.reason || null,
+                  score: d.match?.score || null,
+                  categoryName: ownerEntry?.categoryName || null,
+                  contactShared:
+                    yourMessageId && theirPublicKey
+                      ? isAlreadyShared(sharedMap, yourMessageId, theirPublicKey)
+                      : false,
+                });
+                await markRead(m.id);
+              } else if (m.messageType === "contact_info") {
+                const d = m.data || {};
+                const encryptedPayload = d.encryptedPayload;
+                const fromPublicKey = d.senderPublicKey || null;
+                let plaintext = null;
+                if (encryptedPayload && entry.privateKey) {
+                  plaintext = decryptSealedBox(
+                    encryptedPayload,
+                    entry.publicKey,
+                    entry.privateKey
+                  );
+                }
+                contactInfo.push({
+                  inboxId: m.id,
+                  fromPublicKey,
+                  plaintext,
+                });
+                await markRead(m.id);
+              } else if (m.messageType === "text") {
+                text.push({
+                  inboxId: m.id,
+                  fromPublicKey: m.data?.fromPublicKey || null,
+                  content: m.content || "",
+                });
+                await markRead(m.id);
+              }
+            }
+          }
+
+          return JSON.stringify({ matches, contactInfo, text });
+        } catch (e) {
+          console.error(`[${SKILL_TAG}]`, e);
+          return JSON.stringify({
+            error: `Inbox check failed: ${
+              e && e.message ? e.message : String(e)
+            }`,
+          });
+        }
+      };
+    </script>
+  </body>
+</html>

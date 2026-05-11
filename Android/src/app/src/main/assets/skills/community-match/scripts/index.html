@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Match</title>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium@0.7.15/dist/modules/libsodium.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.15/dist/modules/libsodium-wrappers.js"></script>
+  </head>
+  <body>
+    <script>
+      const BACKEND_URL =
+        "https://gratitude-backend-121647732945.europe-west4.run.app";
+      const STORAGE_KEY = "communityShareKeys";
+      const MAX_KEYS_TO_QUERY = 25;
+
+      function loadStoredKeys() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return [];
+          return parsed
+            .filter(
+              (e) =>
+                e && typeof e.publicKey === "string" && e.publicKey.length >= 8
+            )
+            .slice(-MAX_KEYS_TO_QUERY);
+        } catch (e) {
+          console.warn("[community-match] localStorage read failed:", e);
+          return [];
+        }
+      }
+
+      window.ai_edge_gallery_get_result = async (data) => {
+        try {
+          const stored = loadStoredKeys();
+          if (stored.length === 0) {
+            return JSON.stringify({
+              myKeyCount: 0,
+              myMessageCount: 0,
+              globalMessageCount: 0,
+              matches: [],
+            });
+          }
+          const publicKeys = stored.map((e) => e.publicKey);
+
+          const res = await fetch(`${BACKEND_URL}/v1/connect/match`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ publicKeys }),
+          });
+
+          if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            return JSON.stringify({
+              error: `Backend ${res.status}: ${text || res.statusText}`,
+            });
+          }
+          const json = await res.json();
+          return JSON.stringify({
+            myKeyCount: stored.length,
+            myMessageCount: json.myMessageCount ?? 0,
+            globalMessageCount: json.globalMessageCount ?? 0,
+            matches: json.matches ?? [],
+          });
+        } catch (e) {
+          console.error("[community-match]", e);
+          return JSON.stringify({
+            error: `Match check failed: ${
+              e && e.message ? e.message : String(e)
+            }`,
+          });
+        }
+      };
+    </script>
+  </body>
+</html>

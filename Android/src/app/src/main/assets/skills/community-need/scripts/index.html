@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community Need</title>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium@0.7.15/dist/modules/libsodium.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/libsodium-wrappers@0.7.15/dist/modules/libsodium-wrappers.js"></script>
+  </head>
+  <body>
+    <script type="module">
+      import { pipeline, env } from "https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2";
+
+      // ---- Configuration ----
+      const BACKEND_URL =
+        "https://gratitude-backend-121647732945.europe-west4.run.app";
+      const FORCED_TYPE = "NEED";
+      const SKILL_TAG = "community-need";
+
+      // Asset paths reused from the unspsc-search skill (single shipped copy).
+      const SEARCH_ASSETS = "/assets/skills/unspsc-search/assets";
+      const MODEL_NAME = "Xenova/all-MiniLM-L6-v2";
+
+      // Embedding / scoring constants.
+      const VEC_DIM = 32;
+      const RECORD_SIZE = 115;
+      const TOP_K = 5;
+      const SCORE_WEIGHTS = { canonical: 0.4, synonym: 0.2, context: 0.4 };
+
+      // Specificity thresholds (Part 4 of plan).
+      const COMMODITY_THRESHOLD = 0.7;
+      const CLASS_THRESHOLD = 0.5;
+
+      const DEFAULT_PRECISION_DECIMALS = 2; // ~1.1 km
+      const GEO_TIMEOUT_MS = 10000;
+      const GEO_MAX_AGE_MS = 5 * 60 * 1000;
+
+      env.allowRemoteModels = false;
+      env.allowLocalModels = true;
+      env.localModelPath = `${SEARCH_ASSETS}/models/`;
+      env.backends.onnx.wasm.wasmPaths =
+        "https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/";
+
+      // ---- Curated keyword fast-paths (Part 3) ----
+      // Hits these first; embedding search runs only on misses.
+      // Codes default to 6-digit class form (XXXXXX00); a few pin specific
+      // commodities or service codes that don't roll up cleanly.
+      const KEYWORD_OVERRIDES = [
+        { match: ["tomato", "tomatoes"], code: 50201700 },
+        { match: ["potato", "potatoes"], code: 50201700 },
+        { match: ["vegetable", "veggies", "produce"], code: 50201700 },
+        { match: ["fruit", "apples", "oranges", "berries"], code: 50201500 },
+        { match: ["bread", "loaf"], code: 50181900 },
+        { match: ["meal", "cooked food", "leftovers"], code: 50000000 },
+        { match: ["mattress", "bed", "bedframe", "bunk"], code: 52121600 },
+        {
+          match: ["sheet", "bedding", "blanket", "comforter", "duvet"],
+          code: 52121500,
+        },
+        { match: ["pillow"], code: 52121700 },
+        {
+          match: ["clothes", "clothing", "shirt", "pants", "trousers"],
+          code: 53000000,
+        },
+        { match: ["jacket", "coat", "winter coat", "parka"], code: 53101800 },
+        { match: ["shoe", "shoes", "boots", "sneakers"], code: 53111600 },
+        { match: ["baby", "infant", "diaper", "diapers"], code: 49000000 },
+        { match: ["stroller", "car seat", "crib"], code: 49101600 },
+        { match: ["ride", "lift", "drive", "carpool"], code: 93151800 },
+        {
+          match: ["medical appointment ride", "doctor ride", "clinic ride"],
+          code: 93151803,
+        },
+        {
+          match: ["babysitting", "childcare", "watch kids", "watch the kids"],
+          code: 93151700,
+        },
+        {
+          match: ["tutor", "tutoring", "homework help", "study help"],
+          code: 93151702,
+        },
+        {
+          match: ["legal", "court", "paperwork", "know your rights"],
+          code: 93151900,
+        },
+        {
+          match: ["translate", "translation", "interpreter"],
+          code: 93151904,
+        },
+        {
+          match: ["repair", "fix", "broken", "handyman", "handywoman"],
+          code: 93152100,
+        },
+        {
+          match: ["tool", "drill", "saw", "borrow tool", "lend tool"],
+          code: 93152102,
+        },
+        { match: ["moving help", "move boxes", "help moving"], code: 93152105 },
+        { match: ["clean", "cleaning", "vacuum"], code: 93152104 },
+        {
+          match: ["companion", "company", "lonely", "isolated"],
+          code: 93153100,
+        },
+        { match: ["potluck", "community dinner", "shared meal"], code: 93153001 },
+        { match: ["space", "host", "open house"], code: 93153000 },
+        { match: ["computer", "laptop", "desktop"], code: 43210000 },
+        {
+          match: ["phone", "cellphone", "mobile phone", "smartphone"],
+          code: 43191500,
+        },
+        { match: ["book", "books", "novel"], code: 55101500 },
+        { match: ["bike", "bicycle"], code: 25172500 },
+        {
+          match: ["furniture", "table", "chair", "couch", "sofa", "desk"],
+          code: 56101500,
+        },
+        { match: ["first aid", "bandage", "bandages"], code: 42311500 },
+        {
+          match: ["wheelchair", "mobility aid", "walker", "cane"],
+          code: 42211500,
+        },
+        {
+          match: ["menstrual", "tampons", "pads", "period products"],
+          code: 53131606,
+        },
+        { match: ["naloxone", "narcan"], code: 93152505 },
+        { match: ["needle", "syringe exchange"], code: 93152504 },
+        {
+          match: [
+            "mental health support",
+            "someone to talk",
+            "listening",
+            "peer support",
+          ],
+          code: 93151500,
+        },
+        {
+          match: ["money", "emergency funds", "rent", "bail"],
+          code: 93152702,
+        },
+      ];
+
+      function checkOverride(query) {
+        const q = (query || "").toLowerCase();
+        for (const entry of KEYWORD_OVERRIDES) {
+          if (entry.match.some((kw) => q.includes(kw))) return entry.code;
+        }
+        return null;
+      }
+
+      // ---- Generic helpers ----
+      function uuid() {
+        if (crypto && crypto.randomUUID) return crypto.randomUUID();
+        const b = crypto.getRandomValues(new Uint8Array(16));
+        b[6] = (b[6] & 0x0f) | 0x40;
+        b[8] = (b[8] & 0x3f) | 0x80;
+        const h = Array.from(b, (x) => x.toString(16).padStart(2, "0"));
+        return `${h.slice(0, 4).join("")}-${h.slice(4, 6).join("")}-${h
+          .slice(6, 8)
+          .join("")}-${h.slice(8, 10).join("")}-${h.slice(10, 16).join("")}`;
+      }
+
+      function roundCoord(c, decimals) {
+        const p = Math.pow(10, decimals);
+        return Math.round(c * p) / p;
+      }
+
+      function fetchDeviceLocation() {
+        return new Promise((resolve) => {
+          if (!navigator.geolocation) {
+            resolve({ ok: false, reason: "geolocation API unavailable" });
+            return;
+          }
+          navigator.geolocation.getCurrentPosition(
+            (pos) =>
+              resolve({
+                ok: true,
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+              }),
+            (err) =>
+              resolve({
+                ok: false,
+                reason: err && err.message ? err.message : String(err),
+              }),
+            {
+              timeout: GEO_TIMEOUT_MS,
+              maximumAge: GEO_MAX_AGE_MS,
+              enableHighAccuracy: false,
+            }
+          );
+        });
+      }
+
+      // ---- Embedding search (mirrors unspsc-search/scripts/index.html) ----
+      async function loadSearchState() {
+        const [indexBuf, pcaResp, taxResp] = await Promise.all([
+          fetch(`${SEARCH_ASSETS}/unspsc.bin`).then((r) => r.arrayBuffer()),
+          fetch(`${SEARCH_ASSETS}/unspsc-pca.json`).then((r) => r.json()),
+          fetch(`${SEARCH_ASSETS}/unspsc-taxonomy.json`)
+            .then((r) => (r.ok ? r.json() : []))
+            .catch(() => []),
+        ]);
+        const indexView = new DataView(indexBuf);
+        if (indexView.getUint32(0, true) !== 0x554e5343) {
+          throw new Error("Invalid binary index magic");
+        }
+        const numSegments = indexView.getUint8(5);
+        const segmentDir = new Map();
+        let off = 8;
+        for (let i = 0; i < numSegments; i++) {
+          const segId = indexView.getUint8(off);
+          off += 1;
+          const c0 = indexView.getUint8(off);
+          const c1 = indexView.getUint8(off + 1);
+          const c2 = indexView.getUint8(off + 2);
+          const count = c0 | (c1 << 8) | (c2 << 16);
+          off += 3;
+          const offset = indexView.getUint32(off, true);
+          off += 4;
+          segmentDir.set(segId, { count, offset });
+        }
+        const taxonomy = new Map();
+        if (Array.isArray(taxResp)) {
+          for (const e of taxResp) taxonomy.set(e.code, e);
+        }
+        const embedder = await pipeline("feature-extraction", MODEL_NAME);
+        return { indexBuf, indexView, segmentDir, pca: pcaResp, taxonomy, embedder };
+      }
+
+      function projectQuery(queryVec, pca) {
+        const { matrix, mean } = pca;
+        const centered = new Float32Array(queryVec.length);
+        for (let i = 0; i < queryVec.length; i++) centered[i] = queryVec[i] - mean[i];
+        const projected = new Float32Array(matrix.length);
+        for (let i = 0; i < matrix.length; i++) {
+          let s = 0;
+          const row = matrix[i];
+          for (let j = 0; j < row.length; j++) s += centered[j] * row[j];
+          projected[i] = s;
+        }
+        return projected;
+      }
+
+      function readRecord(buf, view, byteOffset) {
+        let o = byteOffset;
+        const code = view.getUint32(o, true);
+        o += 4;
+        o += 1; // skip segment
+        o += 2; // skip family
+        const canonical = new Int8Array(buf, o, VEC_DIM);
+        o += VEC_DIM;
+        const synonym = new Int8Array(buf, o, VEC_DIM);
+        o += VEC_DIM;
+        const context = new Int8Array(buf, o, VEC_DIM);
+        o += VEC_DIM;
+        const scaleC = view.getFloat32(o, true);
+        o += 4;
+        const scaleS = view.getFloat32(o, true);
+        o += 4;
+        const scaleX = view.getFloat32(o, true);
+        return { code, canonical, synonym, context, scaleC, scaleS, scaleX };
+      }
+
+      function cosineDequant(query, q, scale) {
+        let dot = 0,
+          na = 0,
+          nb = 0;
+        for (let i = 0; i < query.length; i++) {
+          const b = q[i] / scale;
+          dot += query[i] * b;
+          na += query[i] * query[i];
+          nb += b * b;
+        }
+        if (na === 0 || nb === 0) return 0;
+        return dot / (Math.sqrt(na) * Math.sqrt(nb));
+      }
+
+      async function embeddingSearch(description, state) {
+        const out = await state.embedder(description, {
+          pooling: "mean",
+          normalize: true,
+        });
+        const projected = projectQuery(new Float32Array(out.data), state.pca);
+        const candidates = [];
+        for (const segInfo of state.segmentDir.values()) {
+          for (let i = 0; i < segInfo.count; i++) {
+            const rec = readRecord(
+              state.indexBuf,
+              state.indexView,
+              segInfo.offset + i * RECORD_SIZE
+            );
+            const sc1 = cosineDequant(projected, rec.canonical, rec.scaleC);
+            const sc2 = cosineDequant(projected, rec.synonym, rec.scaleS);
+            const sc3 = cosineDequant(projected, rec.context, rec.scaleX);
+            const score =
+              SCORE_WEIGHTS.canonical * sc1 +
+              SCORE_WEIGHTS.synonym * sc2 +
+              SCORE_WEIGHTS.context * sc3;
+            if (score > 0) candidates.push({ code: rec.code, score });
+          }
+        }
+        candidates.sort((a, b) => b.score - a.score);
+        return candidates.slice(0, TOP_K);
+      }
+
+      // ---- Specificity rollup (Part 4) ----
+      function rollupByThreshold(top) {
+        if (!top) return null;
+        if (top.score >= COMMODITY_THRESHOLD) return top.code;
+        if (top.score >= CLASS_THRESHOLD) return Math.floor(top.code / 100) * 100;
+        return Math.floor(top.code / 10000) * 10000;
+      }
+
+      // ---- Name resolution from taxonomy ----
+      function resolveCategoryName(code, taxonomy) {
+        if (taxonomy && taxonomy.has(code) && taxonomy.get(code).name) {
+          return taxonomy.get(code).name;
+        }
+        // Walk up to closest known parent if exact rollup wasn't pre-rowed.
+        const cls = Math.floor(code / 100) * 100;
+        if (taxonomy && taxonomy.has(cls) && taxonomy.get(cls).name) {
+          return taxonomy.get(cls).name;
+        }
+        const fam = Math.floor(code / 10000) * 10000;
+        if (taxonomy && taxonomy.has(fam) && taxonomy.get(fam).name) {
+          return taxonomy.get(fam).name;
+        }
+        const seg = Math.floor(code / 1000000) * 1000000;
+        if (taxonomy && taxonomy.has(seg) && taxonomy.get(seg).name) {
+          return taxonomy.get(seg).name;
+        }
+        return "Uncategorized";
+      }
+
+      // ---- Main entry point ----
+      window.ai_edge_gallery_get_result = async (data) => {
+        try {
+          await sodium.ready;
+          const args = JSON.parse(data || "{}");
+
+          // Accept any of: description, query, text. Be lenient.
+          const description =
+            (typeof args.description === "string" && args.description) ||
+            (typeof args.query === "string" && args.query) ||
+            (typeof args.text === "string" && args.text) ||
+            "";
+          if (!description) {
+            return JSON.stringify({
+              error:
+                "description (string) is required — what is the user offering?",
+            });
+          }
+
+          // 1. Override fast-path
+          let resolvedCode = checkOverride(description);
+          let resolutionMethod = resolvedCode ? "keyword-override" : null;
+          let topScore = null;
+          let taxonomyMap = null;
+
+          // 2. Embedding search if no override hit
+          if (!resolvedCode) {
+            const state = await loadSearchState();
+            taxonomyMap = state.taxonomy;
+            const top = await embeddingSearch(description, state);
+            if (!top || top.length === 0 || top[0].score <= 0) {
+              return JSON.stringify({
+                error:
+                  "Could not find a matching category for that description.",
+              });
+            }
+            topScore = top[0].score;
+            resolvedCode = rollupByThreshold(top[0]);
+            resolutionMethod =
+              topScore >= COMMODITY_THRESHOLD
+                ? "embedding-commodity"
+                : topScore >= CLASS_THRESHOLD
+                  ? "embedding-class"
+                  : "embedding-family";
+          }
+
+          // 3. Resolve human-readable category name. If the override path skipped
+          //    taxonomy load, fetch a minimal copy now for the name lookup.
+          if (!taxonomyMap) {
+            const taxResp = await fetch(
+              `${SEARCH_ASSETS}/unspsc-taxonomy.json`
+            )
+              .then((r) => (r.ok ? r.json() : []))
+              .catch(() => []);
+            taxonomyMap = new Map();
+            if (Array.isArray(taxResp)) {
+              for (const e of taxResp) taxonomyMap.set(e.code, e);
+            }
+          }
+          const resolvedCategoryName = resolveCategoryName(
+            resolvedCode,
+            taxonomyMap,
+          );
+
+          // 4. Geolocation
+          const decimals =
+            typeof args.precision === "number" &&
+            args.precision >= 0 &&
+            args.precision <= 4
+              ? Math.floor(args.precision)
+              : DEFAULT_PRECISION_DECIMALS;
+          let latitude =
+            typeof args.latitude === "number" ? args.latitude : undefined;
+          let longitude =
+            typeof args.longitude === "number" ? args.longitude : undefined;
+          let locationSource = "manual";
+          let locationError = null;
+          if (latitude === undefined || longitude === undefined) {
+            const loc = await fetchDeviceLocation();
+            if (loc.ok) {
+              latitude = loc.latitude;
+              longitude = loc.longitude;
+              locationSource = "device";
+            } else {
+              locationSource = "none";
+              locationError = loc.reason;
+            }
+          }
+          if (latitude !== undefined) latitude = roundCoord(latitude, decimals);
+          if (longitude !== undefined)
+            longitude = roundCoord(longitude, decimals);
+
+          // 5. Build payload, sign, POST
+          const payload = {
+            messageId: uuid(),
+            version: 1,
+            type: FORCED_TYPE,
+            timestamp: new Date().toISOString(),
+            unspscCode: resolvedCode,
+          };
+          if (latitude !== undefined && longitude !== undefined) {
+            payload.latitude = latitude;
+            payload.longitude = longitude;
+            payload.locationPrecisionDecimals = decimals;
+          }
+          // Don't include the user description in the payload — anonymity.
+          // (Keep field optional for callers that explicitly want it.)
+          if (
+            typeof args.includeDescription === "boolean" &&
+            args.includeDescription &&
+            description
+          ) {
+            payload.description = description;
+          }
+
+          const kp = sodium.crypto_sign_keypair();
+          const publicKeyB64 = sodium.to_base64(
+            kp.publicKey,
+            sodium.base64_variants.ORIGINAL,
+          );
+          const privateKeyB64 = sodium.to_base64(
+            kp.privateKey,
+            sodium.base64_variants.ORIGINAL,
+          );
+          const payloadBytes = new TextEncoder().encode(JSON.stringify(payload));
+          const signature = sodium.crypto_sign_detached(
+            payloadBytes,
+            kp.privateKey,
+          );
+          const signatureB64 = sodium.to_base64(
+            signature,
+            sodium.base64_variants.ORIGINAL,
+          );
+
+          const res = await fetch(`${BACKEND_URL}/v1/messages/submit`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              messageType: "anonymized",
+              publicKey: publicKeyB64,
+              signature: signatureB64,
+              payload,
+            }),
+          });
+          if (!res.ok) {
+            const text = await res.text().catch(() => "");
+            return JSON.stringify({
+              error: `Backend ${res.status}: ${text || res.statusText}`,
+            });
+          }
+          const json = await res.json();
+
+          // 6. Persist ephemeral pubkey for community-pulse to query later.
+          try {
+            const k = "communityShareKeys";
+            const existing = JSON.parse(localStorage.getItem(k) || "[]");
+            existing.push({
+              publicKey: publicKeyB64,
+              privateKey: privateKeyB64,
+              messageId: json.messageId,
+              type: FORCED_TYPE,
+              unspscCode: resolvedCode,
+              categoryName: resolvedCategoryName,
+              timestamp: payload.timestamp,
+            });
+            localStorage.setItem(k, JSON.stringify(existing.slice(-50)));
+          } catch (e) {
+            console.warn(`[${SKILL_TAG}] localStorage write failed:`, e);
+          }
+
+          // 7. Chain a fast match check now that this post exists in the global pool.
+          // Fire-and-forget: don't block the response on it. Match notifications
+          // land in the inbox; community-inbox will surface them later.
+          let newMatchCount = 0;
+          try {
+            const matchKeys = JSON.parse(
+              localStorage.getItem("communityShareKeys") || "[]"
+            )
+              .map((e) => e && e.publicKey)
+              .filter((k) => typeof k === "string" && k.length >= 8)
+              .slice(-25);
+            if (matchKeys.length > 0) {
+              const matchRes = await fetch(`${BACKEND_URL}/v1/connect/match`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ publicKeys: matchKeys }),
+              });
+              if (matchRes.ok) {
+                const matchJson = await matchRes.json();
+                newMatchCount = Array.isArray(matchJson.matches)
+                  ? matchJson.matches.length
+                  : 0;
+              }
+            }
+          } catch (e) {
+            console.warn(`[${SKILL_TAG}] inline match check failed:`, e);
+          }
+
+          // Response intentionally omits `unspscCode` so the chat-rendered
+          // tool result contains no digits the model can transcribe.
+          return JSON.stringify({
+            messageId: json.messageId,
+            ephemeralPublicKey: publicKeyB64,
+            type: FORCED_TYPE,
+            resolvedCategoryName,
+            resolutionMethod,
+            locationSource,
+            locationPrecisionDecimals:
+              latitude !== undefined ? decimals : null,
+            locationError,
+            newMatchCount,
+          });
+        } catch (e) {
+          console.error(`[${SKILL_TAG}]`, e);
+          return JSON.stringify({
+            error: `Post failed: ${e && e.message ? e.message : String(e)}`,
+          });
+        }
+      };
+    </script>
+  </body>
+</html>

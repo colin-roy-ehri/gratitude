@@ -18,15 +18,18 @@ package com.google.ai.edge.gallery.ui.common
 
 import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
 import android.view.ViewGroup
 import android.webkit.ConsoleMessage
+import android.webkit.GeolocationPermissions
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.core.content.ContextCompat
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
@@ -111,6 +114,10 @@ fun GalleryWebView(
   }
   var pendingCameraPermissionRequest by remember { mutableStateOf<PermissionRequest?>(null) }
   var pendingAudioPermissionRequest by remember { mutableStateOf<PermissionRequest?>(null) }
+  var pendingGeolocationOrigin by remember { mutableStateOf<String?>(null) }
+  var pendingGeolocationCallback by remember {
+    mutableStateOf<GeolocationPermissions.Callback?>(null)
+  }
 
   val cameraPermissionLauncher =
     rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {
@@ -140,6 +147,14 @@ fun GalleryWebView(
       }
     }
 
+  val locationPermissionLauncher =
+    rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {
+      isGranted: Boolean ->
+      pendingGeolocationCallback?.invoke(pendingGeolocationOrigin, isGranted, false)
+      pendingGeolocationCallback = null
+      pendingGeolocationOrigin = null
+    }
+
   AndroidView(
     modifier = modifier,
     factory = { ctx ->
@@ -155,6 +170,7 @@ fun GalleryWebView(
           domStorageEnabled = true
           allowFileAccess = true
           mediaPlaybackRequiresUserGesture = false
+          setGeolocationEnabled(true)
         }
 
         if (preventParentScrolling) {
@@ -213,6 +229,29 @@ fun GalleryWebView(
                     request.grant(otherResources)
                   }
                 }
+            }
+
+            override fun onGeolocationPermissionsShowPrompt(
+              origin: String?,
+              callback: GeolocationPermissions.Callback?,
+            ) {
+              if (callback == null) return
+              val alreadyGranted =
+                ContextCompat.checkSelfPermission(
+                  ctx,
+                  Manifest.permission.ACCESS_COARSE_LOCATION,
+                ) == PackageManager.PERMISSION_GRANTED
+              if (alreadyGranted) {
+                callback.invoke(origin, true, false)
+                return
+              }
+              if (!allowRequestPermission) {
+                callback.invoke(origin, false, false)
+                return
+              }
+              pendingGeolocationOrigin = origin
+              pendingGeolocationCallback = callback
+              locationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
             }
           }
 

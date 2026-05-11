@@ -341,6 +341,7 @@ fun AgentChatScreen(
 
       GalleryWebView(
         modifier = Modifier.size(300.dp),
+        allowRequestPermission = true,
         onWebViewCreated = { webView ->
           webViewRef = webView
           webView.addJavascriptInterface(chatViewJavascriptInterface, "AiEdgeGallery")

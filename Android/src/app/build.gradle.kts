@@ -42,7 +42,7 @@ android {
     // Needed for HuggingFace auth workflows.
     // Use the scheme of the "Redirect URLs" in HuggingFace app.
     manifestPlaceholders["appAuthRedirectScheme"] =
-        "REPLACE_WITH_YOUR_REDIRECT_SCHEME_IN_HUGGINGFACE_APP"
+        "https://gratitude.gemma.com/redirect"
     manifestPlaceholders["applicationName"] = "com.google.ai.edge.gallery.GalleryApplication"
     manifestPlaceholders["appIcon"] = "@mipmap/ic_launcher"
 
@@ -56,17 +56,31 @@ android {
       signingConfig = signingConfigs.getByName("debug")
     }
   }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-  }
   kotlinOptions {
-    jvmTarget = "11"
     freeCompilerArgs += "-Xcontext-receivers"
+    freeCompilerArgs += "-Xannotation-default-target=param-property"
   }
   buildFeatures {
     compose = true
     buildConfig = true
+  }
+}
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(21))
+  }
+}
+
+kotlin {
+  jvmToolchain(21)
+}
+
+kapt {
+  correctErrorTypes = true
+  javacOptions {
+    option("-source", "21")
+    option("-target", "21")
   }
 }
 

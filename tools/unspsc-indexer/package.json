@@ -1,0 +1,23 @@
+{
+  "name": "unspsc-indexer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Builds the unspsc.bin / unspsc-pca.json binary index consumed by the unspsc-search skill. Copied from gratitude/.",
+  "scripts": {
+    "download:model": "tsx scripts/download-embedding-model.ts",
+    "ingest:unspsc": "tsx scripts/ingest-unspsc-taxonomy.ts",
+    "ingest:full": "tsx scripts/ingest-unspsc-taxonomy.ts -- --all",
+    "build:index": "tsx scripts/build-unspsc-index.ts",
+    "build:index:from-trimmed": "tsx scripts/build-unspsc-index.ts -- --source ../../tests/unspsc-search/compaction/trimmed-taxonomy.json"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.5.0",
+    "ml-pca": "^4.1.1",
+    "ml-matrix": "^6.11.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.4.0"
+  }
+}
