@@ -38,7 +38,7 @@ const FILES = [
 ];
 
 async function download() {
-  console.log(`Downloading all-MiniLM-L6-v2 model files to ${OUT_DIR}...\n`);
+  console.log(`Downloading EmbeddingGemma-300m-ONNX model files to ${OUT_DIR}...\n`);
 
   for (const file of FILES) {
     const url = `${BASE_URL}/${file}`;

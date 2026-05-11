@@ -31,12 +31,19 @@ cd gallery/tools/unspsc-indexer
 npm install
 ```
 
-If the bundled model files aren't already on disk under the skill's
-`assets/models/Xenova/all-MiniLM-L6-v2/`, fetch them once:
+Fetch the EmbeddingGemma weights. The 196 MB `model_q4.onnx_data` file is
+**gitignored** (above GitHub's 100 MB limit), so a fresh clone will not have
+it on disk and the `unspsc-search` skill will fail to load in the APK until
+this runs:
 
 ```bash
 npm run download:model
 ```
+
+Pulls the EmbeddingGemma-300m ONNX files (`model_q4.onnx` + `.onnx_data`,
+tokenizer, configs) into
+`Android/src/app/src/main/assets/skills/unspsc-search/assets/models/onnx-community/embeddinggemma-300m-ONNX/`.
+~200 MB total, runs once.
 
 ## Building the index
 
