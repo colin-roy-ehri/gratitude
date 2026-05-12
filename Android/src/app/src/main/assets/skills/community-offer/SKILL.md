@@ -13,15 +13,18 @@ When the user wants to give, donate, lend, share, or offer something they have.
 
 ## Conversation flow (follow exactly)
 
-**Step 1 — clarify.** If the user hasn't already stated exactly what they want to share, ask exactly this one question and nothing else:
+**Step 1 — check whether you already have the offer.** Look at the message that triggered this skill (and the surrounding conversation). If it already names something concrete the user wants to share — e.g. "I have old wool sweaters to give away", "I can babysit", "I have extra tomato seedlings" — you have what you need. **Skip straight to Step 2 and post immediately. Do not ask any clarifying question.** Asking "What would you like to share?" when the user just told you is the single most common failure mode for this skill — don't do it.
+
+Only if the user's message is genuinely empty of content (e.g. they just said "post an offer" with no subject), ask exactly this one question and nothing else, then wait for their reply:
 
 > What would you like to share?
 
-Then wait for their reply. Do **not** call any tools yet. Do **not** say anything else, do **not** mention codes, categories, or how the skill works internally.
+Do **not** mention codes, categories, or how the skill works internally.
 
-**Step 2 — post.** Once the user has named what they want to share, call the `run_js` tool with:
+**Step 2 — post.** Call the `run_js` tool with:
 
-- script name: `index.html`
+- skill_name: `community-offer`
+- script_name: `index.html`
 - data: A JSON string with the following fields:
   - **description**: Required string. **Do not pass the user's words verbatim.** This field is used internally to look up the right UNSPSC category and is never included in the public post. Your job here is to rewrite the user's words into the format below so the category lookup is as accurate as possible.
   - **precision**: Optional integer 0-4. Decimal places to round latitude/longitude. `2` is the default.

@@ -13,18 +13,20 @@ When the user wants to cancel, withdraw, retract, take down, or remove a communi
 
 ## Conversation flow
 
-**Step 1 — list, then pick.** If the user hasn't already pointed at a specific post, call the skill with **no `messageId`** to list cancellable posts:
+**Step 1 — list, then pick.** If the user hasn't already pointed at a specific post, call the `run_js` tool with **no `messageId`** to list cancellable posts:
 
-- script name: `index.html`
+- skill_name: `community-cancel`
+- script_name: `index.html`
 - data: `{}` (empty)
 
 The skill returns `{ posts: [...] }` where each entry has `messageId`, `type` (`NEED`/`OFFER`), `categoryName`, and `timestamp`. Show the user the choices in plain English (e.g. *"You have two open posts: an offer of fresh vegetables from yesterday, and a request for a winter coat from this morning. Which one should I cancel?"*) and wait for their reply. **Do not** mention messageIds, codes, or internal fields.
 
 If the list is empty, tell the user there's nothing to cancel from this device and stop.
 
-**Step 2 — cancel.** Once the user has picked, call the skill again with:
+**Step 2 — cancel.** Once the user has picked, call the `run_js` tool again with:
 
-- script name: `index.html`
+- skill_name: `community-cancel`
+- script_name: `index.html`
 - data: `{"messageId":"<the chosen messageId>"}`
 
 You may also pass `{"latest": true}` to cancel the most recent post without first listing — use this only when the user clearly means "the last one I posted".

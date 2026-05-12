@@ -18,7 +18,8 @@ For "did anyone reply to my post?" or "any matches?", use `community-inbox` (or 
 
 Call the `run_js` tool with:
 
-- script name: `index.html`
+- skill_name: `community-pulse`
+- script_name: `index.html`
 - data: `{}` (no parameters)
 
 ## Output

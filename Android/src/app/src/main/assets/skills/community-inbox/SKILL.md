@@ -18,7 +18,8 @@ Polls the backend inbox for every ephemeral pubkey stored on this device, decryp
 
 Call the `run_js` tool with:
 
-- script name: `index.html`
+- skill_name: `community-inbox`
+- script_name: `index.html`
 - data: `{}` (no parameters)
 
 ## Output

@@ -13,15 +13,18 @@ When the user wants to ask, request, borrow, find, or seek something from the co
 
 ## Conversation flow (follow exactly)
 
-**Step 1 — clarify.** If the user hasn't already stated exactly what they need, ask exactly this one question and nothing else:
+**Step 1 — check whether you already have the need.** Look at the message that triggered this skill (and the surrounding conversation). If it already names something concrete the user is asking for — e.g. "I need diapers", "looking for a winter coat", "can someone give me a ride to dialysis" — you have what you need. **Skip straight to Step 2 and post immediately. Do not ask any clarifying question.** Asking "What do you need?" when the user just told you is the single most common failure mode for this skill — don't do it.
+
+Only if the user's request is genuinely empty of content (e.g. they just said "post a need" with no subject), ask exactly this one question and nothing else, then wait for their reply:
 
 > What do you need?
 
-Then wait for their reply. Do **not** call any tools yet. Do **not** say anything else, do **not** mention codes, categories, or how the skill works internally.
+Do **not** mention codes, categories, or how the skill works internally.
 
-**Step 2 — post.** Once the user has named what they need, call the `run_js` tool with:
+**Step 2 — post.** Call the `run_js` tool with:
 
-- script name: `index.html`
+- skill_name: `community-need`
+- script_name: `index.html`
 - data: A JSON string with the following fields:
   - **description**: Required string. **Do not pass the user's words verbatim.** This field is used internally to look up the right UNSPSC category and is never included in the public post. Your job here is to rewrite the user's words into the format below so the category lookup is as accurate as possible.
   - **precision**: Optional integer 0-4. Decimal places to round latitude/longitude. `2` is the default.

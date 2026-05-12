@@ -333,11 +333,39 @@
         return "Uncategorized";
       }
 
+      // Tolerant JSON parse: Gemma sometimes appends a stray trailing
+      // quote (e.g. `{"k":"v"}"`) to the tool-call `data` argument.
+      // Extract the first balanced `{...}` block before parsing.
+      function parseToolData(d) {
+        if (!d) return {};
+        const s = String(d).trim();
+        if (!s) return {};
+        const start = s.indexOf("{");
+        if (start < 0) return JSON.parse(s);
+        let depth = 0, inStr = false, esc = false;
+        for (let i = start; i < s.length; i++) {
+          const c = s[i];
+          if (esc) { esc = false; continue; }
+          if (inStr) {
+            if (c === "\\") esc = true;
+            else if (c === '"') inStr = false;
+            continue;
+          }
+          if (c === '"') inStr = true;
+          else if (c === "{") depth++;
+          else if (c === "}") {
+            depth--;
+            if (depth === 0) return JSON.parse(s.slice(start, i + 1));
+          }
+        }
+        return JSON.parse(s.slice(start));
+      }
+
       // ---- Main entry point ----
       window.ai_edge_gallery_get_result = async (data) => {
         try {
           await sodium.ready;
-          const args = JSON.parse(data || "{}");
+          const args = parseToolData(data);
 
           // Accept any of: description, query, text. Be lenient.
           const description =

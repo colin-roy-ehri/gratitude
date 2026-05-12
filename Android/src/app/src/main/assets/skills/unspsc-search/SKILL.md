@@ -13,7 +13,8 @@ This is an internal diagnostic skill. Its data and ONNX model are reused by the 
 
 Call the `run_js` tool with:
 
-- script name: `index.html`
+- skill_name: `unspsc-search`
+- script_name: `index.html`
 - data: `{"query": "<formatted query>"}`
 
 Returns top-5 matching UNSPSC codes with relevance scores. Codes are integers; do not show them to the user.

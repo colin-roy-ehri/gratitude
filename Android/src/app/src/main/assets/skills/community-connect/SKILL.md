@@ -20,7 +20,8 @@ ONLY after the user has explicitly agreed to share their contact info with a mat
 
 Call the `run_js` tool with:
 
-- script name: `index.html`
+- skill_name: `community-connect`
+- script_name: `index.html`
 - data: A JSON string with:
   - **recipientPublicKey**: Required. The `theirPublicKey` from the match (community-inbox returns this).
   - **yourMessageId**: Required. The `yourMessageId` from the match — used to look up the signing key for the matched post.

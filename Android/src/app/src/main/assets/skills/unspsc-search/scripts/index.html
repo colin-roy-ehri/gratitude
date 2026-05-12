@@ -213,9 +213,36 @@
         }));
       }
 
+      // Tolerant JSON parse: Gemma sometimes appends a stray trailing
+      // quote (e.g. `{"k":"v"}"`) to the tool-call `data` argument.
+      function parseToolData(d) {
+        if (!d) return {};
+        const s = String(d).trim();
+        if (!s) return {};
+        const start = s.indexOf("{");
+        if (start < 0) return JSON.parse(s);
+        let depth = 0, inStr = false, esc = false;
+        for (let i = start; i < s.length; i++) {
+          const c = s[i];
+          if (esc) { esc = false; continue; }
+          if (inStr) {
+            if (c === "\\") esc = true;
+            else if (c === '"') inStr = false;
+            continue;
+          }
+          if (c === '"') inStr = true;
+          else if (c === "{") depth++;
+          else if (c === "}") {
+            depth--;
+            if (depth === 0) return JSON.parse(s.slice(start, i + 1));
+          }
+        }
+        return JSON.parse(s.slice(start));
+      }
+
       window.ai_edge_gallery_get_result = async (data) => {
         try {
-          const params = JSON.parse(data);
+          const params = parseToolData(data);
           const query = params.query;
           if (!query || typeof query !== "string") {
             return JSON.stringify({ error: "query (string) is required" });

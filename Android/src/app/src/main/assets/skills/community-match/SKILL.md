@@ -17,7 +17,8 @@ Triggers the backend's deterministic match routine. Cheap (no LLM call). Returns
 
 Call the `run_js` tool with:
 
-- script name: `index.html`
+- skill_name: `community-match`
+- script_name: `index.html`
 - data: `{}` (no parameters)
 
 ## Output
@@ -31,4 +32,9 @@ Call the `run_js` tool with:
 }
 ```
 
-If `matches` is empty, say nothing — this skill is meant to run silently. If matches are present, recommend the user check their inbox: *"You have a new match — want me to check your inbox?"*
+**You MUST always call the `run_js` tool — do not skip it.** Then act on the result:
+
+- If `matches` is non-empty: reply *"You have a new match — want me to check your inbox?"*
+- If `matches` is empty: reply *"No new matches right now."*
+
+Never reply without first running the tool. Never reply with a single character or empty message.
