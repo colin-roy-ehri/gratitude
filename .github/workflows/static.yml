@@ -7,6 +7,8 @@ on:
     branches: ["main"]
     paths:
       - 'skills/**'
+      - 'docs/site/**'
+      - '.github/workflows/static.yml'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -33,12 +35,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      # Create the nested directory structure
+      # Stage the landing page at the root and the skills tree under /skills/
       - name: Prepare for nested deployment
         run: |
           mkdir -p staging/skills
-          # Move all files (except the staging folder itself) into the subdirectory
           rsync -rr --exclude='staging' ./skills/ staging/skills/
+          rsync -rr ./docs/site/ staging/
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact

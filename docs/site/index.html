@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gratitude — peer-to-peer mutual aid coordination, built on Gemma 4</title>
+  <meta name="description" content="Two neighbors. One has something to offer, one needs something. Gratitude matches them in seconds, on the phones people already have. Built on Gemma 4 for the Gemma 4 Good Hackathon.">
+  <meta property="og:title" content="Gratitude — peer-to-peer mutual aid coordination, built on Gemma 4">
+  <meta property="og:description" content="Two neighbors. One has something to offer, one needs something. Gratitude matches them in seconds.">
+  <meta property="og:type" content="website">
+  <style>
+    :root {
+      --fg: #1a1a1a;
+      --muted: #555;
+      --bg: #fefefe;
+      --accent: #b88600;
+      --accent-bg: #ffd95c;
+      --link: #0b5fff;
+      --rule: #e5e5e5;
+      --code-bg: #f4f4f4;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --fg: #eaeaea;
+        --muted: #aaa;
+        --bg: #0f0f10;
+        --accent: #ffd95c;
+        --accent-bg: #4a3a00;
+        --link: #7aa7ff;
+        --rule: #2a2a2c;
+        --code-bg: #1a1a1c;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 96px;
+    }
+    h1 {
+      font-size: 2rem;
+      margin: 0 0 0.25rem;
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-size: 1.25rem;
+      margin: 2.5rem 0 0.75rem;
+      letter-spacing: -0.01em;
+    }
+    p { margin: 0 0 1rem; }
+    a { color: var(--link); }
+    .tagline {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin: 0 0 1.25rem;
+    }
+    .badges {
+      margin: 0 0 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .badges img { height: 20px; }
+    .video {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin: 1.5rem 0 2rem;
+      background: #000;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .video iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 1.5rem 0;
+    }
+    .cta a {
+      display: inline-block;
+      padding: 10px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .cta .primary {
+      background: var(--accent-bg);
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+    .cta .secondary {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--rule);
+    }
+    ol, ul { padding-left: 1.4rem; }
+    li { margin: 0.35rem 0; }
+    code {
+      font: 0.92em/1.4 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      background: var(--code-bg);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    pre {
+      background: var(--code-bg);
+      padding: 12px 14px;
+      border-radius: 6px;
+      overflow-x: auto;
+      font: 0.88rem/1.45 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    }
+    .note {
+      border-left: 3px solid var(--accent);
+      padding: 0.5rem 0 0.5rem 0.9rem;
+      margin: 1rem 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+    hr {
+      border: 0;
+      border-top: 1px solid var(--rule);
+      margin: 3rem 0 2rem;
+    }
+    footer {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    footer a { color: var(--muted); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Gratitude</h1>
+  <p class="tagline">Peer-to-peer mutual aid coordination, built on Gemma 4.</p>
+
+  <div class="badges">
+    <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon"><img alt="Gemma 4 Good Hackathon" src="https://img.shields.io/badge/Gemma%204%20Good%20Hackathon-Kaggle-orange"></a>
+    <a href="https://github.com/colin-roy-ehri/gratitude/blob/main/LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"></a>
+    <a href="https://github.com/colin-roy-ehri/gratitude"><img alt="Source on GitHub" src="https://img.shields.io/badge/source-GitHub-181717"></a>
+  </div>
+
+  <div class="video">
+    <iframe
+      src="https://www.youtube.com/embed/FLy1D5HESj0"
+      title="Gratitude demo"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen></iframe>
+  </div>
+
+  <p>Two neighbors. One has something to offer — food, a ride, an hour of company. One needs something. Right now, matching them takes days of phone trees, Facebook posts, and clipboards at the church — and the people who get help are mostly the people who already know who to call. <strong>Gratitude does that matching in seconds</strong>, on the phones people already have, for anything one neighbor can offer and anything another can need.</p>
+
+  <p>The motivating scenario is disaster response (e.g. the September 4 2025 Mesa County flooding), but the system is built for everyday mutual aid — disasters are the sharp edge of a continuous problem.</p>
+
+  <h2>Try it on Android</h2>
+
+  <div class="cta">
+    <a class="primary" href="https://github.com/colin-roy-ehri/gratitude/releases/latest/download/gratitude.apk">Download APK (290&nbsp;MB)</a>
+    <a class="secondary" href="https://github.com/colin-roy-ehri/gratitude">Source on GitHub</a>
+  </div>
+
+  <ol>
+    <li>On your Android phone, enable <em>Install unknown apps</em> for your browser (Settings → Apps → your browser → Install unknown apps).</li>
+    <li>Download the APK using the button above and open it. Android will prompt you to install.</li>
+    <li>Launch <strong>Gratitude</strong>. The first run downloads the on-device Gemma 4 E-series weights (one-time, ~1.5&nbsp;GB) over Wi-Fi.</li>
+    <li>Tap a community skill (<code>community-need</code>, <code>community-offer</code>) and describe a need or offer in plain language. Watch Gemma classify it on-device into a structured, signed record.</li>
+  </ol>
+
+  <p class="note">This is an unsigned APK distributed for hackathon judging. It is signed with the Android debug key, not a Play Store key — Android will warn you accordingly. If you would rather not install an unsigned binary, the full source is on GitHub and the app builds with one Gradle command; see <a href="#build">Build from source</a>.</p>
+
+  <p><strong>What you can do with the app alone:</strong> compose a need or offer in natural language, watch the on-device Gemma 4 model classify it into a UNSPSC code + structured fields, see the wire-format record before it is signed and transmitted. The demo backend has standing test offers and needs you can match against — post a matching need or offer and you should see a match notification within seconds.</p>
+
+  <p><strong>What you can do with two devices:</strong> the full lifecycle — match notification, opt-in contact-share, end-to-end encrypted handoff of phone numbers between matched parties.</p>
+
+  <h2 id="build">Build from source</h2>
+
+  <p>For developers who want to verify that the binary matches the source, or who would rather not install an unsigned APK:</p>
+
+  <pre><code>git clone https://github.com/colin-roy-ehri/gratitude
+cd gratitude/Android/src
+./gradlew :app:installDebug   # builds and installs to the connected device</code></pre>
+
+  <p>A HuggingFace OAuth app is required for the model-download flow inherited from upstream Gallery — see <a href="https://github.com/colin-roy-ehri/gratitude/blob/main/DEVELOPMENT.md">DEVELOPMENT.md</a>. To build a release APK matching the one above: <code>./gradlew :app:assembleRelease</code>.</p>
+
+  <h2>How it works</h2>
+
+  <p>Gratitude is a two-tier system. Both tiers run Gemma 4.</p>
+
+  <p><strong>On-device (Gemma 4 E-series, via LiteRT).</strong> The user describes a need or offer in plain language. A Gemma 4 E2B model running on-device classifies that utterance into one or more structured records — a UNSPSC category, a quantity, a time window, an approximate location. <strong>EmbeddingGemma-300m</strong> encodes the normalized query and matches it against a pre-computed index of every UNSPSC code in the extended taxonomy. The user's actual words never leave their phone.</p>
+
+  <p><strong>Self-hosted backend (Fastify on Compute Engine, Gemma 4 via Vertex AI MaaS).</strong> The backend receives signed structured messages, runs deterministic geographic + categorical matching, and brokers libsodium-sealed contact-share blobs between matched parties. The matching itself is deterministic — Gemma 4 26B is only invoked for the optional community-pulse welfare summary.</p>
+
+  <p>The full architecture, message format, privacy boundaries, and Gemma 4 evaluation numbers are in the <a href="https://github.com/colin-roy-ehri/gratitude#how-it-works">repo README</a>.</p>
+
+  <h2>Privacy, briefly</h2>
+
+  <p>The server is structurally incapable of reading message contents or learning identities. What that means precisely:</p>
+
+  <ul>
+    <li><strong>Cannot see:</strong> user names, phone numbers, free-form message text, contact info shared between matched parties, or any stable identity-to-message linkage.</li>
+    <li><strong>Can see:</strong> approximate location (lat/long to 2 decimal places), message timing, UNSPSC categories, public-key reuse within a session, the implicit social graph of who-matches-with-whom.</li>
+  </ul>
+
+  <p>This precision matters more than a blanket "private" claim — the Firestore schema is in <a href="https://github.com/colin-roy-ehri/gratitude/tree/main/backend">backend/README.md</a> and makes the boundary auditable.</p>
+
+  <hr>
+
+  <footer>
+    <p>Gratitude is a fork of <a href="https://github.com/google-ai-edge/gallery">google-ai-edge/gallery</a>, which provides the on-device LLM runtime and the Agent Skills framework. Apache 2.0.</p>
+    <p>Submitted to the <a href="https://www.kaggle.com/competitions/gemma-4-good-hackathon">Gemma 4 Good Hackathon</a>, May 2026.</p>
+  </footer>
+</main>
+</body>
+</html>
