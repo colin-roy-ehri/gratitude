@@ -742,7 +742,17 @@ constructor(
     if (baseUrl.isEmpty()) {
       return null
     }
-    return "$baseUrl/scripts/$scriptName"
+    // Gemma E2B sometimes passes a bare skill name (or other extensionless value)
+    // as scriptName despite SKILL.md saying `index.html`. Fall back to index.html
+    // so the run_js call succeeds instead of 404-ing in the WebView asset loader.
+    val resolvedScriptName =
+      if (scriptName.endsWith(".html") || scriptName.endsWith(".js") || scriptName.endsWith(".mjs")) {
+        scriptName
+      } else {
+        Log.w(TAG, "getJsSkillUrl: invalid scriptName \"$scriptName\" for skill \"$skillName\"; falling back to index.html")
+        "index.html"
+      }
+    return "$baseUrl/scripts/$resolvedScriptName"
   }
 
   fun getJsSkillWebviewUrl(skillName: String, url: String): String {

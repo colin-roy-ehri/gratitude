@@ -34,7 +34,7 @@ Call the `run_js` tool with:
 
 **You MUST always call the `run_js` tool — do not skip it.** Then act on the result:
 
-- If `matches` is non-empty: reply *"You have a new match — want me to check your inbox?"*
+- **If `matches` is non-empty: do not reply to the user yet.** Immediately call the `community-inbox` skill in the same turn (no narration in between) so the new match is surfaced with `matchToken`, category, and decrypted contact info. Reply to the user based on the community-inbox output, not the community-match output.
 - If `matches` is empty: reply *"No new matches right now."*
 
 Never reply without first running the tool. Never reply with a single character or empty message.

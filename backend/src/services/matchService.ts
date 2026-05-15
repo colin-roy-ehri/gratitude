@@ -18,7 +18,8 @@ export class MatchService {
         matches.push({
           leftMessageId: a.id,
           rightMessageId: b.id,
-          unspscCode: a.searchable.unspscCode,
+          leftUnspscCode: a.searchable.unspscCode,
+          rightUnspscCode: b.searchable.unspscCode,
           score,
           reason: this.reason(a, b, score),
         });

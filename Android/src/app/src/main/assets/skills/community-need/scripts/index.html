@@ -532,13 +532,15 @@
           }
 
           // 7. Chain a fast match check now that this post exists in the global pool.
-          // Fire-and-forget: don't block the response on it. Match notifications
-          // land in the inbox; community-inbox will surface them later.
-          let newMatchCount = 0;
+          //    The backend now returns caller-oriented matches; we use that to
+          //    populate the same `communityMatches` cache community-inbox writes,
+          //    so community-connect can resolve a matchToken without an inbox poll.
+          let inlineMatches = [];
           try {
-            const matchKeys = JSON.parse(
+            const storedEntries = JSON.parse(
               localStorage.getItem("communityShareKeys") || "[]"
-            )
+            );
+            const matchKeys = storedEntries
               .map((e) => e && e.publicKey)
               .filter((k) => typeof k === "string" && k.length >= 8)
               .slice(-25);
@@ -550,9 +552,72 @@
               });
               if (matchRes.ok) {
                 const matchJson = await matchRes.json();
-                newMatchCount = Array.isArray(matchJson.matches)
-                  ? matchJson.matches.length
-                  : 0;
+                const allMatches = Array.isArray(matchJson.matches)
+                  ? matchJson.matches
+                  : [];
+                const freshMatches = allMatches.filter(
+                  (m) => m && m.yourMessageId === json.messageId
+                );
+
+                let cache = {};
+                try {
+                  const raw = localStorage.getItem("communityMatches");
+                  const parsed = raw ? JSON.parse(raw) : {};
+                  if (parsed && typeof parsed === "object") cache = parsed;
+                } catch (e) {
+                  cache = {};
+                }
+                const existingTokens = Object.keys(cache)
+                  .map((t) => parseInt(t.replace(/^M/, ""), 10))
+                  .filter((n) => Number.isFinite(n));
+                let nextMatchIndex =
+                  (existingTokens.length ? Math.max(...existingTokens) : 0) + 1;
+
+                let sharedMap = {};
+                try {
+                  const raw = localStorage.getItem("communityContactShared");
+                  const parsed = raw ? JSON.parse(raw) : {};
+                  if (parsed && typeof parsed === "object") sharedMap = parsed;
+                } catch (e) {
+                  sharedMap = {};
+                }
+
+                for (const m of freshMatches) {
+                  const matchToken = `M${nextMatchIndex++}`;
+                  const matchedCategoryName =
+                    resolveCategoryName(m.theirUnspscCode, taxonomyMap) ||
+                    resolvedCategoryName ||
+                    null;
+                  cache[matchToken] = {
+                    inboxId: null,
+                    yourMessageId: m.yourMessageId || null,
+                    theirMessageId: m.theirMessageId || null,
+                    theirPublicKey: m.theirPublicKey || null,
+                    ownerPublicKey: publicKeyB64,
+                    ownerPrivateKey: privateKeyB64,
+                    categoryName: matchedCategoryName,
+                  };
+                  const sharedList = sharedMap[m.yourMessageId];
+                  const contactShared =
+                    Array.isArray(sharedList) &&
+                    sharedList.includes(m.theirPublicKey);
+                  inlineMatches.push({
+                    matchToken,
+                    reason: m.reason || null,
+                    score: typeof m.score === "number" ? m.score : null,
+                    categoryName: matchedCategoryName,
+                    contactShared,
+                  });
+                }
+
+                try {
+                  localStorage.setItem(
+                    "communityMatches",
+                    JSON.stringify(cache)
+                  );
+                } catch (e) {
+                  console.warn(`[${SKILL_TAG}] matchCache write failed:`, e);
+                }
               }
             }
           } catch (e) {
@@ -571,7 +636,8 @@
             locationPrecisionDecimals:
               latitude !== undefined ? decimals : null,
             locationError,
-            newMatchCount,
+            newMatchCount: inlineMatches.length,
+            matches: inlineMatches,
           });
         } catch (e) {
           console.error(`[${SKILL_TAG}]`, e);

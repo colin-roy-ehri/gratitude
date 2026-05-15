@@ -13,8 +13,47 @@
         "https://gratitude-backend-121647732945.europe-west4.run.app";
       const STORAGE_KEY = "communityShareKeys";
       const SHARED_KEY = "communityContactShared"; // map: yourMessageId -> [theirPublicKey, ...]
+      const MATCH_CACHE_KEY = "communityMatches"; // map: matchToken -> { theirPublicKey, yourMessageId, ownerPublicKey, ownerPrivateKey, ... }
       const SKILL_TAG = "community-inbox";
       const MAX_KEYS_TO_QUERY = 25;
+      const SEARCH_ASSETS = "/assets/skills/unspsc-search/assets";
+
+      let taxonomyMapPromise = null;
+      function getTaxonomyMap() {
+        if (!taxonomyMapPromise) {
+          taxonomyMapPromise = fetch(`${SEARCH_ASSETS}/unspsc-taxonomy.json`)
+            .then((r) => (r.ok ? r.json() : []))
+            .then((rows) => {
+              const map = new Map();
+              if (Array.isArray(rows)) {
+                for (const e of rows) map.set(e.code, e);
+              }
+              return map;
+            })
+            .catch(() => new Map());
+        }
+        return taxonomyMapPromise;
+      }
+
+      function resolveCategoryName(code, taxonomy) {
+        if (typeof code !== "number" || !taxonomy) return null;
+        if (taxonomy.has(code) && taxonomy.get(code).name) {
+          return taxonomy.get(code).name;
+        }
+        const cls = Math.floor(code / 100) * 100;
+        if (taxonomy.has(cls) && taxonomy.get(cls).name) {
+          return taxonomy.get(cls).name;
+        }
+        const fam = Math.floor(code / 10000) * 10000;
+        if (taxonomy.has(fam) && taxonomy.get(fam).name) {
+          return taxonomy.get(fam).name;
+        }
+        const seg = Math.floor(code / 1000000) * 1000000;
+        if (taxonomy.has(seg) && taxonomy.get(seg).name) {
+          return taxonomy.get(seg).name;
+        }
+        return null;
+      }
 
       function loadStoredKeys() {
         try {
@@ -103,6 +142,24 @@
           const matches = [];
           const contactInfo = [];
           const text = [];
+          // Cache of full match details, keyed by short tokens (M1, M2, ...).
+          // The model only ever sees the token; community-connect resolves it
+          // back to keys/messageIds from this map. We MERGE into the existing
+          // cache (rather than replace) so tokens written inline by the
+          // community-offer / community-need post path survive an inbox poll.
+          let matchCache = {};
+          try {
+            const raw = localStorage.getItem(MATCH_CACHE_KEY);
+            const parsed = raw ? JSON.parse(raw) : {};
+            if (parsed && typeof parsed === "object") matchCache = parsed;
+          } catch (e) {
+            matchCache = {};
+          }
+          const existingTokens = Object.keys(matchCache)
+            .map((t) => parseInt(t.replace(/^M/, ""), 10))
+            .filter((n) => Number.isFinite(n));
+          let nextMatchIndex =
+            (existingTokens.length ? Math.max(...existingTokens) : 0) + 1;
 
           for (const entry of stored) {
             const url = `${BACKEND_URL}/v1/messages/poll?publicKey=${encodeURIComponent(
@@ -126,17 +183,35 @@
                 const d = m.data || {};
                 const yourMessageId = d.yourMessageId || null;
                 const theirPublicKey = d.theirPublicKey || null;
+                const theirUnspscCode =
+                  typeof d.theirUnspscCode === "number"
+                    ? d.theirUnspscCode
+                    : null;
                 const ownerEntry = stored.find(
                   (e) => e.messageId === yourMessageId
                 );
-                matches.push({
+                const taxonomy = await getTaxonomyMap();
+                const matchedCategoryName =
+                  resolveCategoryName(theirUnspscCode, taxonomy) ||
+                  ownerEntry?.categoryName ||
+                  null;
+                const matchToken = `M${nextMatchIndex++}`;
+                // Store everything the connect/etc. skills will need.
+                // The model never sees these fields — only matchToken.
+                matchCache[matchToken] = {
                   inboxId: m.id,
                   yourMessageId,
                   theirMessageId: d.theirMessageId || null,
                   theirPublicKey,
+                  ownerPublicKey: ownerEntry?.publicKey || null,
+                  ownerPrivateKey: ownerEntry?.privateKey || null,
+                  categoryName: matchedCategoryName,
+                };
+                matches.push({
+                  matchToken,
                   reason: d.match?.reason || null,
                   score: d.match?.score || null,
-                  categoryName: ownerEntry?.categoryName || null,
+                  categoryName: matchedCategoryName,
                   contactShared:
                     yourMessageId && theirPublicKey
                       ? isAlreadyShared(sharedMap, yourMessageId, theirPublicKey)
@@ -170,6 +245,12 @@
                 await markRead(m.id);
               }
             }
+          }
+
+          try {
+            localStorage.setItem(MATCH_CACHE_KEY, JSON.stringify(matchCache));
+          } catch (e) {
+            console.warn(`[${SKILL_TAG}] matchCache write failed:`, e);
           }
 
           return JSON.stringify({ matches, contactInfo, text });

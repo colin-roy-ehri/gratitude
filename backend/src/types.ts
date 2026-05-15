@@ -39,16 +39,26 @@ export interface InboxMessage {
 export interface MatchCandidate {
   leftMessageId: string;
   rightMessageId: string;
-  unspscCode?: number;
+  leftUnspscCode?: number;
+  rightUnspscCode?: number;
   score: number;
   reason: string;
+}
+
+export interface OrientedMatch extends MatchCandidate {
+  yourMessageId: string;
+  yourPublicKey: string;
+  yourUnspscCode?: number;
+  theirMessageId: string;
+  theirPublicKey: string;
+  theirUnspscCode?: number;
 }
 
 export interface ConnectAnalysisResult {
   keyCount: number;
   myMessageCount: number;
   globalMessageCount: number;
-  matches: MatchCandidate[];
+  matches: (MatchCandidate | OrientedMatch)[];
   modelSummary?: string;
   communityActivitySummary?: string;
 }

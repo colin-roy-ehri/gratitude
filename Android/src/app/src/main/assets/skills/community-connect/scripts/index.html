@@ -13,7 +13,19 @@
         "https://gratitude-backend-121647732945.europe-west4.run.app";
       const STORAGE_KEY = "communityShareKeys";
       const SHARED_KEY = "communityContactShared";
+      const MATCH_CACHE_KEY = "communityMatches"; // populated by community-inbox
       const SKILL_TAG = "community-connect";
+
+      function loadMatchCache() {
+        try {
+          const raw = localStorage.getItem(MATCH_CACHE_KEY);
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (e) {
+          return {};
+        }
+      }
 
       function loadStoredKeys() {
         try {
@@ -68,32 +80,98 @@
         return JSON.parse(s.slice(start));
       }
 
+      // Case- and separator-insensitive field lookup. Gemma E2B routinely
+      // renames fields (`contactText` -> `contact`, `contact_Text`, `Contact-Text`),
+      // so we normalize keys before comparing aliases.
+      function getField(obj, ...aliases) {
+        if (!obj || typeof obj !== "object") return undefined;
+        const norm = (s) => String(s).toLowerCase().replace(/[_\s\-]/g, "");
+        const targets = new Set(aliases.map(norm));
+        for (const k of Object.keys(obj)) {
+          if (targets.has(norm(k))) return obj[k];
+        }
+        return undefined;
+      }
+
       window.ai_edge_gallery_get_result = async (data) => {
         try {
           await sodium.ready;
           const args = parseToolData(data);
-          const recipientPublicKey = args.recipientPublicKey;
-          const yourMessageId = args.yourMessageId;
-          const contactText = args.contactText;
+          // Accept any reasonable Gemma rephrasing. Normalizer strips case,
+          // underscores, spaces, and dashes — so "Contact", "contact_Text",
+          // "contact-info", "Contact Details" all collapse to one of these.
+          const contactText = getField(
+            args,
+            "contactText",
+            "contact",
+            "contactInfo",
+            "contactDetails",
+            "contactString",
+            "contactData",
+            "contactMessage",
+            "contactNote",
+            "message",
+            "details",
+            "info",
+            "text",
+            "plaintext",
+            "payload"
+          );
+          // Prefer the opaque matchToken (e.g. "M1") populated by community-inbox.
+          // Only the token has to travel through the model — the real keys live
+          // in localStorage on this device and never enter the LLM context.
+          const matchToken = getField(args, "matchToken", "match", "token");
+          const matchCache = loadMatchCache();
+          const cached = matchToken ? matchCache[matchToken] : null;
 
-          if (!recipientPublicKey || typeof recipientPublicKey !== "string") {
-            return JSON.stringify({ error: "recipientPublicKey is required" });
-          }
-          if (!yourMessageId || typeof yourMessageId !== "string") {
-            return JSON.stringify({ error: "yourMessageId is required" });
-          }
+          // Resolve recipientPublicKey / yourMessageId, preferring the cache
+          // (which the model can't mangle) and falling back to anything the
+          // model passed in.
+          const recipientPublicKey =
+            cached?.theirPublicKey ||
+            args.recipientPublicKey ||
+            args.theirPublicKey;
+          const yourMessageId =
+            cached?.yourMessageId ||
+            args.yourMessageId ||
+            args.myMessageId;
+
           if (!contactText || typeof contactText !== "string") {
             return JSON.stringify({ error: "contactText is required" });
           }
+          if (!recipientPublicKey || typeof recipientPublicKey !== "string") {
+            return JSON.stringify({
+              error: matchToken
+                ? `Unknown matchToken "${matchToken}". Run community-inbox first to refresh.`
+                : "matchToken (from community-inbox) is required",
+            });
+          }
+          if (!yourMessageId || typeof yourMessageId !== "string") {
+            return JSON.stringify({
+              error: "Couldn't resolve which of your posts this match is for.",
+            });
+          }
 
+          // Prefer keys cached on the match itself (kept consistent at inbox-time);
+          // fall back to the per-post entry in communityShareKeys.
           const stored = loadStoredKeys();
-          const myEntry = stored.find((e) => e && e.messageId === yourMessageId);
-          if (!myEntry || !myEntry.privateKey || !myEntry.publicKey) {
+          const fallbackEntry = stored.find(
+            (e) => e && e.messageId === yourMessageId
+          );
+          const ownerPublicKey =
+            cached?.ownerPublicKey || fallbackEntry?.publicKey || null;
+          const ownerPrivateKey =
+            cached?.ownerPrivateKey || fallbackEntry?.privateKey || null;
+          if (!ownerPublicKey || !ownerPrivateKey) {
             return JSON.stringify({
               error:
                 "Couldn't find the signing key for your matched post on this device.",
             });
           }
+          const myEntry = {
+            publicKey: ownerPublicKey,
+            privateKey: ownerPrivateKey,
+          };
 
           // Sealed-box: convert recipient Ed25519 pub -> X25519, encrypt.
           const recipientEdPub = sodium.from_base64(

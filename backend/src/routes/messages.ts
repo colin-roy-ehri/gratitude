@@ -4,7 +4,7 @@ import { MessageRepository } from '../repositories/messageRepository.js';
 import { GemmaService } from '../services/gemmaService.js';
 import { MatchService } from '../services/matchService.js';
 import { deletionMessage, isFreshTimestamp, verifyEd25519 } from '../services/signing.js';
-import type { SearchableFields, Coordinates, DateRange } from '../types.js';
+import type { SearchableFields, Coordinates, DateRange, OrientedMatch } from '../types.js';
 
 const submitSchema = z.object({
   messageType: z.enum(['anonymized', 'text', 'public_contact_unencrypted']),
@@ -104,11 +104,33 @@ export async function registerMessageRoutes(app: FastifyInstance): Promise<void>
     // Push matches to the inboxes of both parties involved in the match
     const allMessages = new Map([...myMessages, ...globalMessages].map((m) => [m.id, m]));
 
+    // Caller-oriented view of each match for the response payload. Lets the
+    // post-skill chain (community-offer/need) populate matchCache without
+    // needing a follow-up inbox poll to learn theirPublicKey.
+    const callerKeySet = new Set(publicKeys);
+    const orientedMatches: OrientedMatch[] = [];
+
     for (const match of matches) {
       const leftMsg = allMessages.get(match.leftMessageId);
       const rightMsg = allMessages.get(match.rightMessageId);
 
       if (!leftMsg || !rightMsg) continue;
+
+      // Orient relative to the caller. If neither side is the caller (shouldn't
+      // happen since matchService draws "mine" from publicKeys, but be safe),
+      // fall back to left=mine for a stable shape.
+      const leftIsMine = callerKeySet.has(leftMsg.publicKey);
+      const mine = leftIsMine ? leftMsg : rightMsg;
+      const theirs = leftIsMine ? rightMsg : leftMsg;
+      orientedMatches.push({
+        ...match,
+        yourMessageId: mine.id,
+        yourPublicKey: mine.publicKey,
+        yourUnspscCode: mine.searchable.unspscCode,
+        theirMessageId: theirs.id,
+        theirPublicKey: theirs.publicKey,
+        theirUnspscCode: theirs.searchable.unspscCode,
+      });
 
       const matchId = [leftMsg.id, rightMsg.id].sort().join(':');
 
@@ -122,8 +144,10 @@ export async function registerMessageRoutes(app: FastifyInstance): Promise<void>
             match,
             matchId,
             yourMessageId: leftMsg.id,
+            yourUnspscCode: leftMsg.searchable.unspscCode,
             theirMessageId: rightMsg.id,
             theirPublicKey: rightMsg.publicKey,
+            theirUnspscCode: rightMsg.searchable.unspscCode,
           },
         });
       }
@@ -138,8 +162,10 @@ export async function registerMessageRoutes(app: FastifyInstance): Promise<void>
             match,
             matchId,
             yourMessageId: rightMsg.id,
+            yourUnspscCode: rightMsg.searchable.unspscCode,
             theirMessageId: leftMsg.id,
             theirPublicKey: leftMsg.publicKey,
+            theirUnspscCode: leftMsg.searchable.unspscCode,
           },
         });
       }
@@ -149,7 +175,7 @@ export async function registerMessageRoutes(app: FastifyInstance): Promise<void>
       keyCount: publicKeys.length,
       myMessageCount: myMessages.length,
       globalMessageCount: globalMessages.length,
-      matches,
+      matches: orientedMatches,
     };
   });
 

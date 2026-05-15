@@ -28,10 +28,7 @@ Call the `run_js` tool with:
 {
   "matches": [
     {
-      "inboxId": "...",
-      "yourMessageId": "...",
-      "theirMessageId": "...",
-      "theirPublicKey": "...",
+      "matchToken": "M1",
       "reason": "exact UNSPSC match on 50101900",
       "score": 0.8,
       "categoryName": "Fresh vegetables",
@@ -47,11 +44,13 @@ Call the `run_js` tool with:
 }
 ```
 
+`matchToken` is a short opaque handle (e.g. `"M1"`). The actual keys and message IDs are kept on-device — you do not see them and must not invent them.
+
 ## Conversation flow
 
 **1. Summarize matches.** For each `match`, describe it in plain English using `categoryName` if present: *"You have a match on your offer of fresh vegetables — someone nearby is looking for the same thing."*
 
-**2. If `contactShared` is false, OFFER the contact-share flow.** Ask: *"Want to share your contact info with them?"* If the user says yes, call the `community-connect` skill with `theirPublicKey` and `yourMessageId`. If no, do nothing — they can come back to it later.
+**2. If `contactShared` is false, OFFER the contact-share flow.** Ask: *"Want to share your contact info with them?"* If the user says yes, call the `community-connect` skill with the **`matchToken`** for this match and the user's `contactText`. Do not pass any keys or message IDs — community-connect resolves them locally. If no, do nothing — they can come back to it later.
 
 **3. Decrypted contact info.** If `contactInfo` is non-empty, that means someone shared their contact details with the user. Read out each `plaintext` so the user can save it.
 

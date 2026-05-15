@@ -46,11 +46,40 @@ import com.google.ai.edge.litertlm.SamplerConfig
 import com.google.ai.edge.litertlm.ToolProvider
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.CancellationException
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.coroutines.CoroutineScope
 
 private const val TAG = "AGLlmChatModelHelper"
 
-data class LlmModelInstance(val engine: Engine, var conversation: Conversation)
+// How long we wait for an in-flight inference callback to finish before
+// closing/recreating the underlying Conversation. The native LiteRT-LM
+// session crashes (SIGSEGV in liblitertlm_jni.so / SIGABRT in
+// ReferenceQueueDaemon) if conversation.close() races a worker thread that
+// is still inside the prior sendMessageAsync.
+private const val INFERENCE_IDLE_TIMEOUT_MS = 2000L
+
+data class LlmModelInstance(
+  val engine: Engine,
+  var conversation: Conversation,
+  val inferenceInFlight: AtomicBoolean = AtomicBoolean(false),
+  val closed: AtomicBoolean = AtomicBoolean(false),
+)
+
+private fun awaitInferenceIdle(instance: LlmModelInstance) {
+  if (!instance.inferenceInFlight.get()) return
+  val deadline = System.currentTimeMillis() + INFERENCE_IDLE_TIMEOUT_MS
+  while (instance.inferenceInFlight.get() && System.currentTimeMillis() < deadline) {
+    try {
+      Thread.sleep(20)
+    } catch (_: InterruptedException) {
+      Thread.currentThread().interrupt()
+      return
+    }
+  }
+  if (instance.inferenceInFlight.get()) {
+    Log.w(TAG, "awaitInferenceIdle: timed out after ${INFERENCE_IDLE_TIMEOUT_MS}ms; proceeding")
+  }
+}
 
 object LlmChatModelHelper : LlmModelHelper {
   // Indexed by model name.
@@ -166,6 +195,18 @@ object LlmChatModelHelper : LlmModelHelper {
       Log.d(TAG, "Resetting conversation for model '${model.name}'")
 
       val instance = model.instance as LlmModelInstance? ?: return
+      if (instance.closed.get()) {
+        Log.w(TAG, "resetConversation: instance already closed; skipping")
+        return
+      }
+      // Make sure any in-flight inference is cancelled and the worker
+      // callback has actually finished before we destroy the Conversation.
+      try {
+        instance.conversation.cancelProcess()
+      } catch (e: Exception) {
+        Log.w(TAG, "resetConversation: cancelProcess threw", e)
+      }
+      awaitInferenceIdle(instance)
       instance.conversation.close()
 
       val engine = instance.engine
@@ -217,6 +258,21 @@ object LlmChatModelHelper : LlmModelHelper {
 
     val instance = model.instance as LlmModelInstance
 
+    // Latch closed first so any callback still inside MessageCallback
+    // short-circuits before re-entering native state.
+    if (!instance.closed.compareAndSet(false, true)) {
+      Log.w(TAG, "cleanUp: instance already closed")
+      onDone()
+      return
+    }
+
+    try {
+      instance.conversation.cancelProcess()
+    } catch (e: Exception) {
+      Log.w(TAG, "cleanUp: cancelProcess threw", e)
+    }
+    awaitInferenceIdle(instance)
+
     try {
       instance.conversation.close()
     } catch (e: Exception) {
@@ -241,7 +297,12 @@ object LlmChatModelHelper : LlmModelHelper {
 
   override fun stopResponse(model: Model) {
     val instance = model.instance as? LlmModelInstance ?: return
-    instance.conversation.cancelProcess()
+    if (instance.closed.get()) return
+    try {
+      instance.conversation.cancelProcess()
+    } catch (e: Exception) {
+      Log.w(TAG, "stopResponse: cancelProcess threw", e)
+    }
   }
 
   override fun runInference(
@@ -258,6 +319,10 @@ object LlmChatModelHelper : LlmModelHelper {
     val instance = model.instance as? LlmModelInstance
     if (instance == null) {
       onError("LlmModelInstance is not initialized.")
+      return
+    }
+    if (instance.closed.get()) {
+      onError("LlmModelInstance is closed.")
       return
     }
 
@@ -280,18 +345,24 @@ object LlmChatModelHelper : LlmModelHelper {
       contents.add(Content.Text(input))
     }
 
+    instance.inferenceInFlight.set(true)
     conversation.sendMessageAsync(
       Contents.of(contents),
       object : MessageCallback {
         override fun onMessage(message: Message) {
+          if (instance.closed.get()) return
           resultListener(message.toString(), false, message.channels["thought"])
         }
 
         override fun onDone() {
+          instance.inferenceInFlight.set(false)
+          if (instance.closed.get()) return
           resultListener("", true, null)
         }
 
         override fun onError(throwable: Throwable) {
+          instance.inferenceInFlight.set(false)
+          if (instance.closed.get()) return
           if (throwable is CancellationException) {
             Log.i(TAG, "The inference is cancelled.")
             resultListener("", true, null)

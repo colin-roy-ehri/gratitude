@@ -22,10 +22,11 @@ Call the `run_js` tool with:
 
 - skill_name: `community-connect`
 - script_name: `index.html`
-- data: A JSON string with:
-  - **recipientPublicKey**: Required. The `theirPublicKey` from the match (community-inbox returns this).
-  - **yourMessageId**: Required. The `yourMessageId` from the match — used to look up the signing key for the matched post.
-  - **contactText**: Required. The plaintext contact details to share.
+- data: A JSON string with **exactly two fields**:
+  - **matchToken**: Required. The short `matchToken` (e.g. `"M1"`) returned by `community-inbox` for this match. Copy it verbatim.
+  - **contactText**: Required. The plaintext contact details the user gave you (e.g. `"phone 555-1234, email me@example.com"`).
+
+Do **not** pass `recipientPublicKey`, `theirPublicKey`, `yourMessageId`, or any keys/IDs — those are looked up on-device from the matchToken. Passing them is unnecessary and will be ignored.
 
 ## Output
 

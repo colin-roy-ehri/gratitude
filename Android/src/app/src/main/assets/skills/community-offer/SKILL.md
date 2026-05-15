@@ -62,6 +62,16 @@ Minimum useful data: `{"description":"<formatted string>"}`.
 - If it contains a `messageId` and a `resolvedCategoryName`, the post succeeded. Reply with one short sentence in plain English: e.g. *"Posted as Fresh vegetables — anyone nearby can see it."* Use `resolvedCategoryName` for the category. **Do not** mention any numbers, codes, digits, or internal details.
 - If it contains an `error` field, the post **failed**. Tell the user it failed and include the error verbatim. Do **not** claim success.
 
+**Step 4 — if there's already a match, offer the contact-share in the same turn.** If the response contains a non-empty `matches` array, the post already lined up with someone. Do **not** call `community-inbox` — the match is already resolved here. Instead:
+
+- In the same reply that confirms the post, surface the top match using its `categoryName`: *"Posted as Fresh vegetables — and there's already someone nearby who needs the same. Want to share your contact info with them?"*
+- If there are multiple matches, say so briefly (e.g. *"…and a couple of other folks too"*) but only offer the top one now; the rest will surface from `community-inbox` later.
+- If the user says **yes**, ask for their contact text (phone/email/etc.) if they haven't already given it, then call `community-connect` with:
+  - `matchToken`: the **first** match's `matchToken` (verbatim — do not invent one).
+  - `contactText`: the user's contact string.
+- If the user says **no**, do nothing — the match stays in their inbox and `community-inbox` can pick it up later.
+- If `matches[0].contactShared` is `true`, the user has already shared contact info with this person from a previous turn; don't re-offer, just mention the match exists.
+
 ## Privacy model
 
 - A fresh Ed25519 keypair is generated per message via libsodium. No persistent identity.
